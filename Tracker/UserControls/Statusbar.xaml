@@ -1,0 +1,69 @@
+﻿<UserControl x:Class="Tracker.UserControls.Statusbar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Tracker.UserControls"
+             xmlns:vm="clr-namespace:Tracker.ViewModels"
+             xmlns:ti="clr-namespace:Tracker.Infrastructure"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=vm:StatusbarViewModel, IsDesignTimeCreatable=False}"
+             d:DesignHeight="100" d:DesignWidth="1024">
+    <UserControl.Resources>
+        <ti:DoublesToTooltipConverter x:Key="TooltipConverter"/>
+        <ti:DoubleToColorConverter x:Key="BackgroundConverter"/>
+    </UserControl.Resources>
+    <Grid Visibility="{Binding StatusbarVisibility}">
+        <Border Margin="5,0" BorderBrush="{DynamicResource Border}" BorderThickness="1" Background="AliceBlue" Padding="0,2">
+            <StatusBar Background="AliceBlue" VerticalAlignment="Center" VerticalContentAlignment="Center">
+                <StatusBar.Resources>
+                    <Style TargetType="Image">
+                        <Setter Property="Height" Value="{DynamicResource IconHeight}"/>
+                        <Setter Property="Stretch" Value="Uniform"/>
+                    </Style>
+                    <Style TargetType="Label">
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    </Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                    </Style>
+                </StatusBar.Resources>
+                <Label Content="Database:"/>
+                <Border Width="100" Background="{Binding HowFull, Converter={StaticResource BackgroundConverter}}">
+                    <Border.ToolTip>
+                        <MultiBinding Converter="{StaticResource TooltipConverter}">
+                            <Binding Path="DatabaseSize"/>
+                            <Binding Path="Quota"/>
+                        </MultiBinding>
+                    </Border.ToolTip>
+                    <TextBlock HorizontalAlignment="Center" Foreground="White" Text="{Binding HowFull, StringFormat='p'}"/>
+                </Border>
+                <Separator />
+                <Image Source="/resources/company-32.png" ToolTip="Clients"/>
+                <TextBlock Text="{Binding ClientCount, StringFormat='n0'}"/>
+                <Separator />
+                <Image Source="/resources/time-32.png" ToolTip="Hours"/>
+                <TextBlock Text="{Binding HoursCount, StringFormat='n0'}"/>
+                <Separator />
+                <Image Source="/resources/car-32.png" ToolTip="Mileage"/>
+                <TextBlock Text="{Binding MileageCount, StringFormat='n0'}"/>
+                <Separator />
+                <Image Source="/resources/document-32.png" ToolTip="Notes"/>
+                <TextBlock Text="{Binding NoteCount, StringFormat='n0'}"/>
+                <Separator />
+                <Image Source="/resources/phone-32.png" ToolTip="Phones"/>
+                <TextBlock Text="{Binding PhoneCount, StringFormat='n0'}"/>
+                <Separator />
+                <Image Source="/resources/dotlist-32.png" ToolTip="Phone Types"/>
+                <TextBlock Text="{Binding PhoneTypeCount, StringFormat='n0'}"/>
+                <Separator />
+                <Label Content="Total Hours:"/>
+                <TextBlock Text="{Binding HoursTotal, StringFormat='n2'}"/>
+                <Separator />
+                <Label Content="Total Miles:"/>
+                <TextBlock Text="{Binding MileageTotal, StringFormat='n2'}"/>
+            </StatusBar>
+        </Border>
+    </Grid>
+</UserControl>
