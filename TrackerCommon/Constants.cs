@@ -19,9 +19,10 @@
         public const int HashLength = 64;           // bytes, not bits
         public const int SaltLength = 64;           // ditto
 
-        // Exit codes, next = 902
+        // Exit codes, next = 903
 
         public const int MigrationFailed = 901;
+        public const int ClientLoadFailed = 902;
 
         // strings
 
@@ -58,6 +59,9 @@
         public const string Varbinary = "varbinary(max)";
         public const string Miles = "decimal(6,2)";
         public const string Hours = "decimal(7,4)";
+
+        public const string HexPattern = @"\A\b[0-9a-fA-F]+\b\Z";
+        public const string NumberPattern = @"\A\b[0-9]_\b\Z";
 
         public const string Cancel = "/resources/cancel-32.png";
         public const string Checkmark = "/resources/checkmark-32.png";

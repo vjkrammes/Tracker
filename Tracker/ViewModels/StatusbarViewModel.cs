@@ -24,6 +24,13 @@ namespace Tracker.ViewModels
             set => SetProperty(ref _clientCount, value);
         }
 
+        private int _clientTypeCount;
+        public int ClientTypeCount
+        {
+            get => _clientTypeCount;
+            set => SetProperty(ref _clientTypeCount, value);
+        }
+
         private int _hoursCount;
         public int HoursCount
         {
@@ -97,6 +104,7 @@ namespace Tracker.ViewModels
         public void Update()
         {
             ClientCount = Tools.Locator.ClientECL.Count;
+            ClientTypeCount = Tools.Locator.ClientTypeECL.Count;
             HoursCount = Tools.Locator.HoursECL.Count;
             MileageCount = Tools.Locator.MileageECL.Count;
             NoteCount = Tools.Locator.NoteECL.Count;

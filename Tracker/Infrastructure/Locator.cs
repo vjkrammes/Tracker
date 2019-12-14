@@ -37,6 +37,7 @@ namespace Tracker.Infrastructure
             MapperConfiguration config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<ClientEntity, Client>().ReverseMap();
+                cfg.CreateMap<ClientTypeEntity, ClientType>().ReverseMap();
                 cfg.CreateMap<HoursEntity, Hours>().ReverseMap();
                 cfg.CreateMap<MileageEntity, Mileage>().ReverseMap();
                 cfg.CreateMap<NoteEntity, Note>().ReverseMap();
@@ -50,6 +51,7 @@ namespace Tracker.Infrastructure
         private void InitializeDAL(IServiceCollection services)
         {
             services.AddTransient<IClientDAL, ClientDAL>();
+            services.AddTransient<IClientTypeDAL, ClientTypeDAL>();
             services.AddTransient<IHoursDAL, HoursDAL>();
             services.AddTransient<IMileageDAL, MileageDAL>();
             services.AddTransient<INoteDAL, NoteDAL>();
@@ -61,6 +63,7 @@ namespace Tracker.Infrastructure
         private void InitializeECL(ServiceCollection services)
         {
             services.AddTransient<IClientECL, ClientECL>();
+            services.AddTransient<IClientTypeECL, ClientTypeECL>();
             services.AddTransient<IHoursECL, HoursECL>();
             services.AddTransient<IMileageECL, MileageECL>();
             services.AddTransient<INoteECL, NoteECL>();
@@ -70,8 +73,11 @@ namespace Tracker.Infrastructure
 
         private void InitializeViewModels(ServiceCollection services)
         {
+            services.AddTransient<ClientTypeViewModel>();
             services.AddSingleton<MainViewModel>();
+            services.AddTransient<PhoneTypeViewModel>();
             services.AddTransient<PopupViewModel>();
+            services.AddTransient<QAViewModel>();
             services.AddSingleton<StatusbarViewModel>();
         }
 
@@ -87,8 +93,11 @@ namespace Tracker.Infrastructure
 
         #region ViewModels
 
+        public ClientTypeViewModel ClientTypeViewModel { get => _provider.GetRequiredService<ClientTypeViewModel>(); }
         public MainViewModel MainViewModel { get => _provider.GetRequiredService<MainViewModel>(); }
+        public PhoneTypeViewModel PhoneTypeViewModel { get => _provider.GetRequiredService<PhoneTypeViewModel>(); }
         public PopupViewModel PopupViewModel { get => _provider.GetRequiredService<PopupViewModel>(); }
+        public QAViewModel QAViewModel { get => _provider.GetRequiredService<QAViewModel>(); }
         public StatusbarViewModel StatusbarViewModel { get => _provider.GetRequiredService<StatusbarViewModel>(); }
 
         #endregion
@@ -96,6 +105,7 @@ namespace Tracker.Infrastructure
         #region DALs (Data Access Layer classes, interface to EF and the database, produces Entity objects)
 
         public IClientDAL ClientDAL { get => _provider.GetRequiredService<IClientDAL>(); }
+        public IClientTypeDAL ClientTypeDAL { get => _provider.GetRequiredService<IClientTypeDAL>(); }
         public IHoursDAL HoursDAL { get => _provider.GetRequiredService<IHoursDAL>(); }
         public IMileageDAL MileageDAL { get => _provider.GetRequiredService<IMileageDAL>(); }
         public INoteDAL NoteDAL { get => _provider.GetRequiredService<INoteDAL>(); }
@@ -108,6 +118,7 @@ namespace Tracker.Infrastructure
         #region ECLs (Entity Convertion Layer classes, consumes Entity objects and produces observable DTO and Model objects)
 
         public IClientECL ClientECL { get => _provider.GetRequiredService<IClientECL>(); }
+        public IClientTypeECL ClientTypeECL { get => _provider.GetRequiredService<IClientTypeECL>(); }
         public IHoursECL HoursECL { get => _provider.GetRequiredService<IHoursECL>(); }
         public IMileageECL MileageECL { get => _provider.GetRequiredService<IMileageECL>(); }
         public INoteECL NoteECL { get => _provider.GetRequiredService<INoteECL>(); }

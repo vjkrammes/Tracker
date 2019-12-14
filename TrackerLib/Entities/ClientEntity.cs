@@ -10,6 +10,8 @@ namespace TrackerLib.Entities
     {
         [Required]
         public int Id { get; set; }
+        [Required]
+        public int ClientTypeId { get; set; }
         [Required, MaxLength(50)]
         public string Name { get; set; }
         [Required, MaxLength(50)]
@@ -26,6 +28,9 @@ namespace TrackerLib.Entities
         public string Comments { get; set; }
         [Timestamp]
         public byte[] RowVersion { get; set; }
+
+        [NullOnUpdate]
+        public ClientTypeEntity ClientType { get; set; }
 
         [NullOnUpdate]
         public List<PhoneEntity> Phones { get; set; }

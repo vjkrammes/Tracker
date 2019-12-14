@@ -15,13 +15,16 @@
     <Window.InputBindings>
         <KeyBinding Command="{Binding AboutCommand}" Key="A" Modifiers="Alt"/>
         <KeyBinding Command="{Binding BackupCommand}" Key="B" Modifiers="Alt"/>
-        <KeyBinding Command="{Binding ManageClientsCommand}" Key="C" Modifiers="Alt"/>
-        <KeyBinding Command="{Binding ManagePhoneTypesCommand}" Key="T" Modifiers="Alt"/>
+        <KeyBinding Command="{Binding ManagePhoneTypesCommand}" Key="P" Modifiers="Alt"/>
+        <KeyBinding Command="{Binding ManageClientTypesCommand}" Key="T" Modifiers="Alt"/>
         <KeyBinding Command="{Binding PalletteCommand}" Key="Y" Modifiers="Alt"/>
     </Window.InputBindings>
     <Window.Resources>
         <ti:VisibilityToMenuHeaderConverter x:Key="MenuHeaderConverter"/>
         <ti:VisibilityToMenuIconConverter x:Key="MenuIconConverter"/>
+        <ti:CountToVisibilityConverter x:Key="VisibilityConverter"/>
+        <ti:SelectedItemToVisibilityConverter x:Key="SelectedItemConverter"/>
+        <ti:StringToFirstLineConverter x:Key="FirstLineConverter"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -76,10 +79,10 @@
             </Button>
             <Separator />
             <Label Content="Manage:"/>
-            <Button Command="{Binding ManageClientsCommand}" ToolTip="Clients (Alt-C)">
-                <Image Source="/resources/company-32.png"/>
+            <Button Command="{Binding ManageClientTypesCommand}" ToolTip="Client Types (Alt-T)">
+                <Image Source="/resources/group-32.png"/>
             </Button>
-            <Button Command="{Binding ManagePhoneTypesCommand}" ToolTip="Phone Types (Alt-T)">
+            <Button Command="{Binding ManagePhoneTypesCommand}" ToolTip="Phone Types (Alt-P)">
                 <Image Source="/resources/dotlist-32.png"/>
             </Button>
             <Separator />
@@ -95,5 +98,470 @@
             </Button>
         </ToolBar>
         <tu:Statusbar Grid.Row="2" Visibility="{Binding StatusbarVisibility}"/>
+        <Grid Grid.Row="3" Margin="5">
+            <Grid.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Height" Value="18"/>
+                    <Setter Property="Width" Value="18"/>
+                </Style>
+                <Style TargetType="Image">
+                    <Setter Property="Height" Value="16"/>
+                    <Setter Property="Stretch" Value="Uniform"/>
+                </Style>
+            </Grid.Resources>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"/>
+                <RowDefinition />
+                <RowDefinition Height="2*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+            <DockPanel Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" LastChildFill="True">
+                <Grid DockPanel.Dock="Top">
+                    <Border DockPanel.Dock="Top" Style="{DynamicResource BannerBorder}" Margin="0">
+                        <TextBlock Style="{DynamicResource BannerText}" HorizontalAlignment="Left" Text="Clients"/>
+                    </Border>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Command="{Binding AddClientCommand}" Margin="5,0,0,0" ToolTip="New Client"
+                                ToolTipService.ShowOnDisabled="True">
+                            <Image Source="/resources/add-32.png"/>
+                        </Button>
+                        <Button Command="{Binding DeselectClientCommand}" Margin="5,0,0,0" ToolTip="Deselect"
+                                ToolTipService.ShowOnDisabled="True">
+                            <Image Source="/resources/cancel-32.png"/>
+                        </Button>
+                        <Button Command="{Binding EditClientCommand}" Margin="5,0,0,0" ToolTip="Edit the selected Client"
+                                ToolTipService.ShowOnDisabled="True">
+                            <Image Source="/resources/edit-32.png"/>
+                        </Button>
+                        <Button Command="{Binding DeleteClientCommand}" Margin="5,0,5,0" ToolTip="Delete the selected Client"
+                                ToolTipService.ShowOnDisabled="True">
+                            <Image Source="/resources/remove-32.png"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+                <Grid DockPanel.Dock="Bottom">
+                    <tc:ScrollListBox ItemsSource="{Binding Clients}" SelectedValue="{Binding SelectedClient, Mode=TwoWay, 
+                                      UpdateSourceTrigger=PropertyChanged}" AlternationCount="2">
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="New Client" Command="{Binding AddClientCommand}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/resources/add-32.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Deselect selected Client" Command="{Binding DeselectClientCommand}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/resources/cancel-32.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Edit the selected Client" Command="{Binding EditClientCommand}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/resources/edit-32.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <Separator />
+                                <MenuItem Header="Delete the selected Client" Command="{Binding DeleteClientCommand}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/resources/remove-32.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{DynamicResource Border}" BorderThickness="1" Margin="3" Padding="2" 
+                                        CornerRadius="3">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" Margin="2" FontWeight="Bold" Text="{Binding Name}"/>
+                                        <TextBlock Grid.Row="1" Margin="2" FontStyle="Italic" Text="{Binding PrimaryContact}"/>
+                                        <StackPanel Grid.Row="2" Margin="2" Orientation="Horizontal">
+                                            <Image Source="{Binding Phones[0].PhoneType.ImageUri}" Margin="1" Height="14"/>
+                                            <TextBlock Text="{Binding Phones[0].Number}" Margin="5,0,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </tc:ScrollListBox>
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.5" Text="No Clients Found"
+                               Visibility="{Binding Clients.Count, Converter={StaticResource VisibilityConverter}}"/>
+                </Grid>
+            </DockPanel>
+            <DockPanel Grid.Row="0" Grid.Column="1" LastChildFill="True">
+                <Grid DockPanel.Dock="Top">
+                    <Border Style="{DynamicResource BannerBorder}" Margin="0">
+                        <TextBlock Style="{DynamicResource BannerText}" Text="Client Information"/>
+                    </Border>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Margin="5,0,0,0" Command="{Binding AddNoteCommand}" ToolTip="Add Note" 
+                                ToolTipService.ShowOnDisabled="True">
+                            <Image Source="/resources/document-32.png"/>
+                        </Button>
+                        <Button Margin="5,0,0,0" Command="{Binding AddMileageCommand}" ToolTip="Add Mileage"
+                                ToolTipService.ShowOnDisabled="True">
+                            <Image Source="/resources/car-32.png"/>
+                        </Button>
+                        <Button Margin="5,0,0,0" Command="{Binding AddHoursCommand}" ToolTip="Add Hours"
+                                ToolTipService.ShowOnDisabled="True">
+                            <Image Source="/resources/time-32.png"/>
+                        </Button>
+                        <Button Margin="5,0" Command="{Binding AddPhoneCommand}" ToolTip="Add a Phone"
+                                ToolTipService.ShowOnDisabled="True">
+                            <Image Source="/resources/phone-32.png"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+                <Grid DockPanel.Dock="Bottom">
+                    <Grid Visibility="{Binding SelectedClient, Converter={StaticResource SelectedItemConverter}, 
+                          ConverterParameter={ti:Bool True}}">
+                        <Grid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Add Note" Command="{Binding AddNoteCommand}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/resources/document-32.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Add Mileage" Command="{Binding AddMileageCommand}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/resources/car-32.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Add Hours" Command="{Binding AddHoursCommand}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/resources/time-32.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Add Phone" Command="{Binding AddPhoneCommand}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/resources/phone-32.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </Grid.ContextMenu>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Row="0" Grid.Column="0" Margin="5" Text="Name:"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding SelectedClient.Name}"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" Margin="5" Text="Address:"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" Margin="5" Text="{Binding SelectedClient.Address}"/>
+                        <TextBlock Grid.Row="2" Grid.Column="0" Margin="5" Text="City:"/>
+                        <Grid Grid.Row="2" Grid.Column="1" Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{Binding SelectedClient.City}"/>
+                            <TextBlock Grid.Column="1" Margin="5,0,0,0" Text="State:"/>
+                            <TextBlock Grid.Column="2" Margin="5,0,0,0" Text="{Binding SelectedClient.State}"/>
+                            <TextBlock Grid.Column="3" Margin="5,0,0,0" Text="ZIP:"/>
+                            <TextBlock Grid.Column="4" Margin="5,0,0,0" Text="{Binding SelectedClient.PostalCode}"/>
+                        </Grid>
+                        <TextBlock Grid.Row="3" Grid.Column="0" Margin="5" Text="Contact:"/>
+                        <TextBlock Grid.Row="3" Grid.Column="1" Margin="5" Text="{Binding SelectedClient.PrimaryContact}"/>
+                        <TextBlock Grid.Row="4" Grid.Column="0" Margin="5" Text="Comments:" VerticalAlignment="Top"/>
+                        <TextBox Grid.Row="4" Grid.Column="1" Margin="5" VerticalAlignment="Stretch" VerticalContentAlignment="Top"
+                                 IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Height="50"/>
+                        <TextBlock Grid.Row="5" Grid.Column="0" Margin="5" Text="Phones:" VerticalAlignment="Top"/>
+                        <ListBox Grid.Row="5" Grid.Column="1" Margin="5" ItemsSource="{Binding SelectedClient.Phones}"
+                                 SelectedValue="{Binding SelectedPhone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="{DynamicResource Border}" BorderThickness="1" Margin="2" Padding="2"
+                                            CornerRadius="3">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="{Binding ImageUri}" Height="16" Margin="1"/>
+                                            <TextBlock Margin="1,1,3,1" Text="{Binding Name}"/>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel IsItemsHost="True" Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Change Type" ItemsSource="{Binding PhoneTypeMenuItems}">
+                                        <MenuItem.Icon>
+                                            <Image Source="/resources/phone-32.png"/>
+                                        </MenuItem.Icon>
+                                        <MenuItem.ItemContainerStyle>
+                                            <Style TargetType="MenuItem">
+                                                <Setter Property="Header" Value="{Binding Header}"/>
+                                                <Setter Property="Tag" Value="{Binding Tag}"/>
+                                                <Setter Property="Icon" Value="{Binding Icon}"/>
+                                                <Setter Property="Command" Value="{Binding Command}"/>
+                                                <Setter Property="CommandParameter" Value="{Binding CommandParameter}"/>
+                                            </Style>
+                                        </MenuItem.ItemContainerStyle>
+                                    </MenuItem>
+                                    <MenuItem Header="Edit Number" Command="{Binding EditPhoneNumberCommand}">
+                                        <MenuItem.Icon>
+                                            <Image Source="/resources/edit-32.png"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem Header="Delete" Command="{Binding DeletePhoneCommand}">
+                                        <MenuItem.Icon>
+                                            <Image Source="/resources/remove-32.png"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </ListBox.ContextMenu>
+                        </ListBox>
+                    </Grid>
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.5" Text="No Client Selected"
+                               Visibility="{Binding SelectedClient, Converter={StaticResource SelectedItemConverter}}"/>
+                </Grid>
+            </DockPanel>
+            <DockPanel Grid.Row="1" Grid.Column="1" LastChildFill="True">
+                <Grid DockPanel.Dock="Top">
+                    <Border DockPanel.Dock="Top" Style="{DynamicResource BannerBorder}" Margin="0">
+                        <TextBlock Style="{DynamicResource BannerText}" Text="Notes"/>
+                    </Border>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Margin="5,0,0,0" Command="{Binding AddNoteCommand}" ToolTip="Add a new Note"
+                                ToolTipService.ShowOnDisabled="True">
+                            <Image Source="/resources/add-32.png"/>
+                        </Button>
+                        <Button Margin="5,0,0,0" Command="{Binding DeselectNoteCommand}" ToolTip="Deselect the selected Note"
+                                ToolTipService.ShowOnDisabled="True">
+                            <Image Source="/resources/cancel-32.png"/>
+                        </Button>
+                        <Button Margin="5,0,0,0" Command="{Binding EditNoteCommand}" ToolTip="Edit the selected Note"
+                                ToolTipService.ShowOnDisabled="True">
+                            <Image Source="/resources/edit-32.png"/>
+                        </Button>
+                        <Button Margin="5,0" Command="{Binding DeleteNoteCommand}" ToolTip="Delete the selected Note"
+                                ToolTipService.ShowOnDisabled="True">
+                            <Image Source="/resources/remove-32.png"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+                <Grid DockPanel.Dock="Bottom">
+                    <tc:ScrollListView ItemsSource="{Binding Notes}" SelectedValue="{Binding SelectedNote, Mode=TwoWay,
+                                   UpdateSourceTrigger=PropertyChanged}" AlternationCount="2" Style="{DynamicResource AlternatingListView}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Date, StringFormat='d'}" Width="auto"/>
+                                <GridViewColumn Header="Text" Width="auto">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Text, Converter={StaticResource FirstLineConverter}}" 
+                                                   TextTrimming="CharacterEllipsis" ToolTip="{Binding Text}"/>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                        <ListView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="New" Command="{Binding AddNoteCommand}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/resources/add-32.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Deselect" Command="{Binding DeselectNoteCommand}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/resources/cancel-32.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Edit" Command="{Binding EditNoteCommand}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/resources/edit-32.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <Separator />
+                                <MenuItem Header="Delete" Command="{Binding DeleteNoteCommand}">
+                                    <MenuItem.Icon>
+                                        <Image Source="/resources/remove-32.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </ListView.ContextMenu>
+                    </tc:ScrollListView>
+                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Opacity="0.5" Text="No Notes Found"
+                               Visibility="{Binding Notes.Count, Converter={StaticResource VisibilityConverter}}"/>
+                </Grid>
+            </DockPanel>
+            <Grid Grid.Row="2" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <DockPanel Grid.Column="0" Margin="0,0,2,0" LastChildFill="True">
+                    <Grid DockPanel.Dock="Top">
+                        <Border Style="{DynamicResource BannerBorder}" Margin="0">
+                            <TextBlock Style="{DynamicResource BannerText}" Text="Hours"/>
+                        </Border>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Margin="5,0,0,0" Command="{Binding AddHoursCommand}" ToolTip="Add new Hours"
+                                    ToolTipService.ShowOnDisabled="True">
+                                <Image Source="/resources/add-32.png"/>
+                            </Button>
+                            <Button Margin="5,0,0,0" Command="{Binding DeselectHoursCommand}" ToolTip="Deselect the selected Hours"
+                                    ToolTipService.ShowOnDisabled="True">
+                                <Image Source="/resources/cancel-32.png"/>
+                            </Button>
+                            <Button Margin="5,0,0,0" Command="{Binding EditHoursCommand}" ToolTip="Edit the selected Hours"
+                                    ToolTipService.ShowOnDisabled="True">
+                                <Image Source="/resources/edit-32.png"/>
+                            </Button>
+                            <Button Margin="5,0" Command="{Binding DeleteHoursCommand}" ToolTip="Delete the selected Hours"
+                                    ToolTipService.ShowOnDisabled="True">
+                                <Image Source="/resources/remove-32.png"/>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                    <Grid DockPanel.Dock="Bottom">
+                        <tc:ScrollListView ItemsSource="{Binding Hours}" SelectedValue="{Binding SelectedHours, Mode=TwoWay,
+                                           UpdateSourceTrigger=PropertyChanged}" AlternationCount="2" 
+                                           Style="{DynamicResource AlternatingListView}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Date, StringFormat='d'}" Width="auto"/>
+                                    <GridViewColumn Header="Hours" DisplayMemberBinding="{Binding Time, StringFormat='n2'}" Width="auto"/>
+                                    <GridViewColumn Header="Description" Width="auto">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Description, Converter={StaticResource FirstLineConverter}}"
+                                                           TextTrimming="CharacterEllipsis" ToolTip="{Binding Description}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                            <ListView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="New" Command="{Binding AddHoursCommand}">
+                                        <MenuItem.Icon>
+                                            <Image Source="/resources/add-32.png"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="Deselect" Command="{Binding DeselectHoursCommand}">
+                                        <MenuItem.Icon>
+                                            <Image Source="/resources/cancel-32.png"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="Edit" Command="{Binding EditHoursCommand}">
+                                        <MenuItem.Icon>
+                                            <Image Source="/resources/edit-32.png"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem Header="Delete" Command="{Binding DeleteHoursCommand}">
+                                        <MenuItem.Icon>
+                                            <Image Source="/resources/remove-32.png"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                        </tc:ScrollListView>
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.5" Text="No Hours Found"
+                                   Visibility="{Binding Hours.Count, Converter={StaticResource VisibilityConverter}}"/>
+                    </Grid>
+                </DockPanel>
+                <DockPanel Grid.Column="1" Margin="0,0,2,0" LastChildFill="True">
+                    <Grid DockPanel.Dock="Top">
+                        <Border Style="{DynamicResource BannerBorder}" Margin="0">
+                            <TextBlock Style="{DynamicResource BannerText}" Text="Mileage"/>
+                        </Border>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Margin="5,0,0,0" Command="{Binding AddMileageCommand}" ToolTip="Add Mileage" 
+                                    ToolTipService.ShowOnDisabled="True">
+                                <Image Source="/resources/add-32.png"/>
+                            </Button>
+                            <Button Margin="5,0,0,0" Command="{Binding DeselectMileageCommand}" ToolTip="Deselect the selected Mileage"
+                                    ToolTipService.ShowOnDisabled="True">
+                                <Image Source="/resources/cancel-32.png"/>
+                            </Button>
+                            <Button Margin="5,0,0,0" Command="{Binding EditMileageCommand}" ToolTip="Edit the selected Mileage"
+                                    ToolTipService.ShowOnDisabled="True">
+                                <Image Source="/resources/edit-32.png"/>
+                            </Button>
+                            <Button Margin="5,0" Command="{Binding DeleteMileageCommand}" ToolTip="Delete the selected Mileage"
+                                    ToolTipService.ShowOnDisabled="True">
+                                <Image Source="/resources/remove-32.png"/>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                    <Grid DockPanel.Dock="Bottom">
+                        <tc:ScrollListView ItemsSource="{Binding Mileage}" SelectedValue="{Binding SelectedMileage, Mode=TwoWay,
+                                           UpdateSourceTrigger=PropertyChanged}" AlternationCount="2" 
+                                           Style="{DynamicResource AlternatingListView}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Date" DisplayMemberBinding="{Binding Date, StringFormat='d'}" Width="auto"/>
+                                    <GridViewColumn Header="Miles" DisplayMemberBinding="{Binding Miles, StringFormat='n2'}" Width="auto"/>
+                                    <GridViewColumn Header="Description" Width="auto">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Description, Converter={StaticResource FirstLineConverter}}"
+                                                           ToolTip="{Binding Description}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                            <ListView.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="New" Command="{Binding AddMileageCommand}">
+                                        <MenuItem.Icon>
+                                            <Image Source="/resources/add-32.png"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="Deselect" Command="{Binding DeselectMileageCommand}">
+                                        <MenuItem.Icon>
+                                            <Image Source="/resources/cancel-32.png"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="Edit" Command="{Binding EditMileageCommand}">
+                                        <MenuItem.Icon>
+                                            <Image Source="/resources/edit-32.png"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem Header="Delete" Command="{Binding DeleteMileageCommand}">
+                                        <MenuItem.Icon>
+                                            <Image Source="/resources/remove-32.png"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                        </tc:ScrollListView>
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.5" Text="No Mileage Found"
+                                   Visibility="{Binding Mileage.Count, Converter={StaticResource VisibilityConverter}}"/>
+                    </Grid>
+                </DockPanel>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>

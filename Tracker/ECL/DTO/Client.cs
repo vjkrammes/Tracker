@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 using TrackerCommon;
@@ -70,15 +71,15 @@ namespace Tracker.ECL.DTO
             set => SetProperty(ref _rowVersion, value);
         }
 
-        private ObservableCollection<Phone> _phones;
-        public ObservableCollection<Phone> Phones
+        private List<Phone> _phones;
+        public List<Phone> Phones
         {
             get => _phones;
             set => SetProperty(ref _phones, value);
         }
 
-        private ObservableCollection<Note> _notes;
-        public ObservableCollection<Note> Notes
+        private List<Note> _notes;
+        public List<Note> Notes
         {
             get => _notes;
             set => SetProperty(ref _notes, value);

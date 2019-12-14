@@ -18,6 +18,7 @@ namespace TrackerLib
         #region DbSets
 
         public DbSet<ClientEntity> Clients { get; set; }
+        public DbSet<ClientTypeEntity> ClientTypes { get; set; }
         public DbSet<HoursEntity> Hours { get; set; }
         public DbSet<MileageEntity> Mileage { get; set; }
         public DbSet<NoteEntity> Notes { get; set; }
@@ -120,8 +121,11 @@ namespace TrackerLib
             base.OnModelCreating(builder);
 
             builder.Entity<ClientEntity>().HasIndex(x => x.Name).IsUnique().IsClustered(false);
+            builder.Entity<ClientEntity>().HasOne(x => x.ClientType);
             builder.Entity<ClientEntity>().HasMany(x => x.Phones);
             builder.Entity<ClientEntity>().HasMany(x => x.Notes);
+
+            builder.Entity<ClientTypeEntity>().HasIndex(x => x.Name).IsUnique().IsClustered(false);
 
             builder.Entity<HoursEntity>().HasIndex(x => x.ClientId).IsClustered(false);
             builder.Entity<HoursEntity>().HasIndex(x => x.Date).IsClustered(false);

@@ -34,12 +34,14 @@ namespace TrackerLib
             return pred switch
             {
                 null => _dbset
+                    .Include(x => x.ClientType)
                     .Include(x => x.Phones)
                     .Include(x => x.Notes)
                     .OrderBy(x => x.Name)
                     .AsNoTracking()
                     .ToList(),
                 _ => _dbset
+                    .Include(x => x.ClientType)
                     .Include(x => x.Phones)
                     .Include(x => x.Notes)
                     .Where(pred)
@@ -50,5 +52,7 @@ namespace TrackerLib
         }
 
         public ClientEntity Read(int id) => Get(x => x.Id == id).SingleOrDefault();
+
+        public bool ClientTypeHasClients(int ctid) => Get(x => x.ClientTypeId == ctid).Any();
     }
 }

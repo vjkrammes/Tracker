@@ -14,12 +14,12 @@ using TrackerLib.Interfaces;
 
 namespace Tracker.ECL
 {
-    public class ClientECL : IClientECL
+    public class ClientTypeECL : IClientTypeECL
     {
         private readonly IMapper _mapper;
-        private readonly IClientDAL _dal;
+        private readonly IClientTypeDAL _dal;
 
-        public ClientECL(IMapper mapper, IClientDAL dal)
+        public ClientTypeECL(IMapper mapper, IClientTypeDAL dal)
         {
             _mapper = mapper;
             _dal = dal;
@@ -27,37 +27,37 @@ namespace Tracker.ECL
 
         public int Count { get => _dal.Count; }
 
-        public void Insert(Client dto)
+        public void Insert(ClientType dto)
         {
-            var entity = _mapper.Map<ClientEntity>(dto);
+            var entity = _mapper.Map<ClientTypeEntity>(dto);
             _dal.Insert(entity);
             dto.Id = entity.Id;
             dto.RowVersion = entity.RowVersion.ArrayCopy();
         }
 
-        public void Update(Client dto)
+        public void Update(ClientType dto)
         {
-            var entity = _mapper.Map<ClientEntity>(dto);
+            var entity = _mapper.Map<ClientTypeEntity>(dto);
             _dal.Update(entity);
             dto.RowVersion = entity.RowVersion.ArrayCopy();
         }
 
-        public void Delete(Client dto)
+        public void Delete(ClientType dto)
         {
-            var entity = _mapper.Map<ClientEntity>(dto);
+            var entity = _mapper.Map<ClientTypeEntity>(dto);
             _dal.Delete(entity);
         }
 
         public void Delete(int id) => _dal.Delete(id);
 
-        public IEnumerable<Client> Get(Expression<Func<ClientEntity, bool>> pred = null, string sort = null, char direction = 'a')
+        public IEnumerable<ClientType> Get(Expression<Func<ClientTypeEntity, bool>> pred = null, string sort = null, char direction = 'a')
         {
             var entities = _dal.Get(pred, sort, direction);
-            return _mapper.Map<List<Client>>(entities);
+            return _mapper.Map<List<ClientType>>(entities);
         }
 
-        public Client Read(int id) => _mapper.Map<Client>(_dal.Read(id));
+        public ClientType Read(int id) => _mapper.Map<ClientType>(_dal.Read(id));
 
-        public bool ClientTypeHasClients(int ctid) => _dal.ClientTypeHasClients(ctid);
+        public ClientType Read(string name) => _mapper.Map<ClientType>(_dal.Read(name));
     }
 }

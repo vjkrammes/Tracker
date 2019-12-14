@@ -8,23 +8,19 @@ namespace TrackerLib.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Clients",
+                name: "ClientTypes",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
-                    Address = table.Column<string>(maxLength: 50, nullable: false),
-                    City = table.Column<string>(maxLength: 50, nullable: false),
-                    State = table.Column<string>(maxLength: 50, nullable: false),
-                    PostalCode = table.Column<string>(maxLength: 50, nullable: false),
-                    PrimaryContact = table.Column<string>(maxLength: 50, nullable: false),
-                    Comments = table.Column<string>(nullable: false),
+                    Background = table.Column<string>(maxLength: 50, nullable: false),
+                    ARGB = table.Column<long>(nullable: false),
                     RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Clients", x => x.Id);
+                    table.PrimaryKey("PK_ClientTypes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -101,6 +97,33 @@ namespace TrackerLib.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Clients",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClientTypeId = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(maxLength: 50, nullable: false),
+                    Address = table.Column<string>(maxLength: 50, nullable: false),
+                    City = table.Column<string>(maxLength: 50, nullable: false),
+                    State = table.Column<string>(maxLength: 50, nullable: false),
+                    PostalCode = table.Column<string>(maxLength: 50, nullable: false),
+                    PrimaryContact = table.Column<string>(maxLength: 50, nullable: false),
+                    Comments = table.Column<string>(nullable: false),
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clients", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Clients_ClientTypes_ClientTypeId",
+                        column: x => x.ClientTypeId,
+                        principalTable: "ClientTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Notes",
                 columns: table => new
                 {
@@ -153,8 +176,20 @@ namespace TrackerLib.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Clients_ClientTypeId",
+                table: "Clients",
+                column: "ClientTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Clients_Name",
                 table: "Clients",
+                column: "Name",
+                unique: true)
+                .Annotation("SqlServer:Clustered", false);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClientTypes_Name",
+                table: "ClientTypes",
                 column: "Name",
                 unique: true)
                 .Annotation("SqlServer:Clustered", false);
@@ -253,6 +288,9 @@ namespace TrackerLib.Migrations
 
             migrationBuilder.DropTable(
                 name: "PhoneTypes");
+
+            migrationBuilder.DropTable(
+                name: "ClientTypes");
         }
     }
 }

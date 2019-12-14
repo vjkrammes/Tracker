@@ -8,5 +8,6 @@ namespace Tracker.ECL.Interfaces
     {
         void Delete(int id);
         Client Read(int id);
+        bool ClientTypeHasClients(int ctid);
     }
 }

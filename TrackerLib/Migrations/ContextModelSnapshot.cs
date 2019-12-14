@@ -36,6 +36,9 @@ namespace TrackerLib.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
+                    b.Property<int>("ClientTypeId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Comments")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -67,11 +70,47 @@ namespace TrackerLib.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClientTypeId");
+
                     b.HasIndex("Name")
                         .IsUnique()
                         .HasAnnotation("SqlServer:Clustered", false);
 
                     b.ToTable("Clients");
+                });
+
+            modelBuilder.Entity("TrackerLib.Entities.ClientTypeEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<long>("ARGB")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Background")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasAnnotation("SqlServer:Clustered", false);
+
+                    b.ToTable("ClientTypes");
                 });
 
             modelBuilder.Entity("TrackerLib.Entities.HoursEntity", b =>
@@ -320,6 +359,15 @@ namespace TrackerLib.Migrations
                         .HasAnnotation("SqlServer:Clustered", false);
 
                     b.ToTable("SystemSettings");
+                });
+
+            modelBuilder.Entity("TrackerLib.Entities.ClientEntity", b =>
+                {
+                    b.HasOne("TrackerLib.Entities.ClientTypeEntity", "ClientType")
+                        .WithMany()
+                        .HasForeignKey("ClientTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("TrackerLib.Entities.NoteEntity", b =>

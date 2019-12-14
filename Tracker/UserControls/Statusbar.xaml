@@ -43,6 +43,9 @@
                 <Image Source="/resources/company-32.png" ToolTip="Clients"/>
                 <TextBlock Text="{Binding ClientCount, StringFormat='n0'}"/>
                 <Separator />
+                <Image Source="/resources/group-32.png" ToolTip="Client Types"/>
+                <TextBlock Text="{Binding ClientTypeCount, StringFormat='n0'}"/>
+                <Separator />
                 <Image Source="/resources/time-32.png" ToolTip="Hours"/>
                 <TextBlock Text="{Binding HoursCount, StringFormat='n0'}"/>
                 <Separator />
