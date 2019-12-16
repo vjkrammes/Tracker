@@ -73,9 +73,19 @@ namespace Tracker.Infrastructure
 
         private void InitializeViewModels(ServiceCollection services)
         {
+            services.AddTransient<AboutViewModel>();
+            services.AddTransient<BackupViewModel>();
             services.AddTransient<ClientTypeViewModel>();
+            services.AddTransient<ClientViewModel>();
+            services.AddTransient<DatePickerViewModel>();
+            services.AddTransient<ExplorerViewModel>();
+            services.AddTransient<HoursViewModel>();
             services.AddSingleton<MainViewModel>();
+            services.AddTransient<NoteViewModel>();
+            services.AddTransient<PalletteViewModel>();
+            services.AddTransient<PasswordViewModel>();
             services.AddTransient<PhoneTypeViewModel>();
+            services.AddTransient<PhoneViewModel>();
             services.AddTransient<PopupViewModel>();
             services.AddTransient<QAViewModel>();
             services.AddSingleton<StatusbarViewModel>();
@@ -87,15 +97,26 @@ namespace Tracker.Infrastructure
 
         public IConfiguration Configuration { get => _provider.GetRequiredService<IConfiguration>(); }
         public IExplorerService ExplorerService { get => _provider.GetRequiredService<IExplorerService>(); }
+        public IPasswordManager PasswordManager { get => _provider.GetRequiredService<IPasswordManager>(); }
         public IServiceProvider Provider { get => _provider; }
         public ISettingsService Settings { get => _provider.GetRequiredService<ISettingsService>(); }
         public Context Context { get => _provider.GetRequiredService<Context>(); }
 
         #region ViewModels
 
+        public AboutViewModel AboutViewModel { get => _provider.GetRequiredService<AboutViewModel>(); }
+        public BackupViewModel BackupViewModel { get => _provider.GetRequiredService<BackupViewModel>(); }
         public ClientTypeViewModel ClientTypeViewModel { get => _provider.GetRequiredService<ClientTypeViewModel>(); }
+        public ClientViewModel ClientViewModel { get => _provider.GetRequiredService<ClientViewModel>(); }
+        public DatePickerViewModel DatePickerViewModel { get => _provider.GetRequiredService<DatePickerViewModel>(); }
+        public ExplorerViewModel ExplorerViewModel { get => _provider.GetRequiredService<ExplorerViewModel>(); }
+        public HoursViewModel HoursViewModel { get => _provider.GetRequiredService<HoursViewModel>(); }
         public MainViewModel MainViewModel { get => _provider.GetRequiredService<MainViewModel>(); }
+        public NoteViewModel NoteViewModel { get => _provider.GetRequiredService<NoteViewModel>(); }
+        public PalletteViewModel PalletteViewModel { get => _provider.GetRequiredService<PalletteViewModel>(); }
+        public PasswordViewModel PasswordViewModel { get => _provider.GetRequiredService<PasswordViewModel>(); }
         public PhoneTypeViewModel PhoneTypeViewModel { get => _provider.GetRequiredService<PhoneTypeViewModel>(); }
+        public PhoneViewModel PhoneViewModel { get => _provider.GetRequiredService<PhoneViewModel>(); }
         public PopupViewModel PopupViewModel { get => _provider.GetRequiredService<PopupViewModel>(); }
         public QAViewModel QAViewModel { get => _provider.GetRequiredService<QAViewModel>(); }
         public StatusbarViewModel StatusbarViewModel { get => _provider.GetRequiredService<StatusbarViewModel>(); }
@@ -115,7 +136,7 @@ namespace Tracker.Infrastructure
 
         #endregion
 
-        #region ECLs (Entity Convertion Layer classes, consumes Entity objects and produces observable DTO and Model objects)
+        #region ECLs (Entity Conversion Layer classes, consumes Entity objects and produces observable DTO and Model objects)
 
         public IClientECL ClientECL { get => _provider.GetRequiredService<IClientECL>(); }
         public IClientTypeECL ClientTypeECL { get => _provider.GetRequiredService<IClientTypeECL>(); }

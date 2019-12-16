@@ -132,18 +132,17 @@ namespace TrackerLib.Migrations
                     ClientId = table.Column<int>(nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Text = table.Column<string>(nullable: false),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
-                    ClientEntityId = table.Column<int>(nullable: true)
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Notes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Notes_Clients_ClientEntityId",
-                        column: x => x.ClientEntityId,
+                        name: "FK_Notes_Clients_ClientId",
+                        column: x => x.ClientId,
                         principalTable: "Clients",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -155,18 +154,17 @@ namespace TrackerLib.Migrations
                     PhoneTypeId = table.Column<int>(nullable: false),
                     ClientId = table.Column<int>(nullable: false),
                     Number = table.Column<string>(maxLength: 50, nullable: false),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
-                    ClientEntityId = table.Column<int>(nullable: true)
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Phones", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Phones_Clients_ClientEntityId",
-                        column: x => x.ClientEntityId,
+                        name: "FK_Phones_Clients_ClientId",
+                        column: x => x.ClientId,
                         principalTable: "Clients",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Phones_PhoneTypes_PhoneTypeId",
                         column: x => x.PhoneTypeId,
@@ -219,9 +217,10 @@ namespace TrackerLib.Migrations
                 .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Notes_ClientEntityId",
+                name: "IX_Notes_ClientId",
                 table: "Notes",
-                column: "ClientEntityId");
+                column: "ClientId")
+                .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notes_Date",
@@ -230,20 +229,9 @@ namespace TrackerLib.Migrations
                 .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Phones_ClientEntityId",
-                table: "Phones",
-                column: "ClientEntityId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Phones_ClientId",
                 table: "Phones",
                 column: "ClientId")
-                .Annotation("SqlServer:Clustered", false);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Phones_Number",
-                table: "Phones",
-                column: "Number")
                 .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.CreateIndex(

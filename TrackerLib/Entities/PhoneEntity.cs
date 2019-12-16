@@ -18,8 +18,10 @@ namespace TrackerLib.Entities
         [Timestamp]
         public byte[] RowVersion { get; set; }
 
-        [NullOnUpdate]
+        [NullOnUpdate, NullOnInsert]
         public PhoneTypeEntity PhoneType { get; set; }
+        [NullOnUpdate, NullOnInsert]
+        public ClientEntity Client { get; set; }
 
         public override string ToString() => Number;
     }

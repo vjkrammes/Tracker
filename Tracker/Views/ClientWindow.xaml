@@ -1,0 +1,93 @@
+﻿<Window x:Class="Tracker.Views.ClientWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tracker.Views"
+        xmlns:vm="clr-namespace:Tracker.ViewModels"
+        xmlns:ti="clr-namespace:Tracker.Infrastructure"
+        mc:Ignorable="d"
+        ti:DialogCloser.DialogResult="{Binding DialogResult}"
+        d:DataContext="{d:DesignInstance Type=vm:ClientViewModel, IsDesignTimeCreatable=False}" Icon="/resources/company-32.png"
+        Title="Client" Height="400" Width="600" WindowStyle="ThreeDBorderWindow" ResizeMode="CanMinimize" 
+        WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" Closed="Window_Closed" SizeToContent="Height"
+        FocusManager.FocusedElement="{Binding ElementName=tbName}">
+    <Window.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="{Binding StartColor}" Offset="0"/>
+            <GradientStop Color="{Binding EndColor}" Offset="1"/>
+        </LinearGradientBrush>
+    </Window.Background>
+    <Grid Grid.IsSharedSizeScope="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" SharedSizeGroup="Left"/>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{DynamicResource BannerBorder}">
+            <TextBlock Style="{DynamicResource BannerText}" Text="Add or Edit a Client"/>
+        </Border>
+        <TextBlock Grid.Row="1" Grid.Column="0" Margin="5" Text="Name:"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Margin="5" Text="{Binding Client.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Name="tbName"/>
+        <TextBlock Grid.Row="2" Grid.Column="0" Margin="5" Text="Address:"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Margin="5" Text="{Binding Client.Address, Mode=TwoWay, 
+                 UpdateSourceTrigger=PropertyChanged}"/>
+        <Grid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" SharedSizeGroup="Left"/>
+                <ColumnDefinition />
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition />
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="City:"/>
+            <TextBox Grid.Column="1"  Text="{Binding Client.City, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Grid.Column="2" Margin="5,0,0,0" Text="State:"/>
+            <TextBox Grid.Column="3" Margin="5,0,0,0" Text="{Binding Client.State, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Grid.Column="4" Margin="5,0,0,0" Text="ZIP:"/>
+            <TextBox Grid.Column="5" Margin="5,0,0,0" Text="{Binding Client.PostalCode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+        <TextBlock Grid.Row="4" Grid.Column="0" Margin="5" Text="Primary Contact:"/>
+        <TextBox Grid.Row="4" Grid.Column="1" Margin="5" Text="{Binding Client.PrimaryContact, Mode=TwoWay, 
+                 UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBlock Grid.Row="5" Grid.Column="0" Margin="5" Text="Client Type:"/>
+        <ComboBox Grid.Row="5" Grid.Column="1" Margin="5" ItemsSource="{Binding Types}" SelectedValue="{Binding SelectedType, Mode=TwoWay,
+                  UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Name"/>
+        <TextBlock Grid.Row="6" Grid.Column="0" Margin="5" VerticalAlignment="Top" Text="Comments:"/>
+        <TextBox Grid.Row="6" Grid.Column="1" Margin="5" VerticalAlignment="Stretch" VerticalContentAlignment="Top"
+                 AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                 HorizontalScrollBarVisibility="Disabled" Text="{Binding Client.Comments, Mode=TwoWay,
+                 UpdateSourceTrigger=PropertyChanged}" Height="150"/>
+        <Grid Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" HorizontalAlignment="Center" Command="{Binding OkCommand}" IsDefault="True"
+                    Width="{Binding ActualWidth, ElementName=btnCancel}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/resources/checkmark-32.png" Margin="1" Height="16"/>
+                    <TextBlock Margin="1,1,3,1" Text="OK"/>
+                </StackPanel>
+            </Button>
+            <Button Grid.Column="1" HorizontalAlignment="Center" Command="{Binding CancelCommand}" IsCancel="True" Name="btnCancel">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/resources/cancel-32.png" Margin="1" Height="16"/>
+                    <TextBlock Margin="1,1,3,1" Text="Cancel"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+    </Grid>
+</Window>

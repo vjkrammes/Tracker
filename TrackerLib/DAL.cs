@@ -40,6 +40,17 @@ namespace TrackerLib
 
         public virtual void Insert(TEntity entity)
         {
+            if (typeof(TEntity).GetCustomAttribute(typeof(HasNullableMembersAttribute), true) != null)
+            {
+                var properties = typeof(TEntity).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                foreach (var property in properties)
+                {
+                    if (property.GetCustomAttribute(typeof(NullOnInsertAttribute), true) is NullOnInsertAttribute)
+                    {
+                        property.SetValue(entity, null);
+                    }
+                }
+            }
             _dbset.Add(entity);
             _context.SaveChanges();
         }
@@ -51,7 +62,7 @@ namespace TrackerLib
                 var properties = typeof(TEntity).GetProperties(BindingFlags.Public | BindingFlags.Instance);
                 foreach (var property in properties)
                 {
-                    if (property.GetType().GetCustomAttribute(typeof(NullOnUpdateAttribute), true) is NullOnUpdateAttribute)
+                    if (property.GetCustomAttribute(typeof(NullOnUpdateAttribute), true) is NullOnUpdateAttribute)
                     {
                         property.SetValue(entity, null);
                     }

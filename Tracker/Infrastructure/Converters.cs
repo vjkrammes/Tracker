@@ -1,20 +1,197 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Globalization;
 using System.Linq;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Data;
-using TrackerCommon;
-using Tracker.ECL.DTO;
 using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Controls;
-using System.Drawing;
+using System.Windows.Data;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+
+using Tracker.ECL.DTO;
+
+using TrackerCommon;
 
 namespace Tracker.Infrastructure
 {
+    // convert decimal to / from string
+
+    [ValueConversion(typeof(decimal), typeof(string))]
+    public sealed class DecimalConverter : IValueConverter
+    {
+
+        public object Convert(object value, Type t, object parm, CultureInfo lang)
+        {
+            if (!(value is decimal d) || d == 0M)
+            {
+                return string.Empty;
+            }
+            return d.ToString("n2");
+        }
+
+        public object ConvertBack(object value, Type t, object parm, CultureInfo lang)
+        {
+            if (!(value is string v) || string.IsNullOrEmpty(v))
+            {
+                return 0M;
+            }
+            string val = v;
+            if (v.EndsWith('.'))
+            {
+                val = v[..^1];
+            }
+            if (!decimal.TryParse(val, out decimal d))
+            {
+                return 0M;
+            }
+            return d;
+        }
+    }
+
+    // convert from string to Uri which is null if string does not contains multiple lines, else return uri in parm
+
+    [ValueConversion(typeof(string), typeof(Uri), ParameterType = typeof(string))]
+    public sealed class StringToMultiLineUriConverter : IValueConverter
+    {
+
+        public object Convert(object value, Type t, object parm, CultureInfo lang)
+        {
+            if (!(value is string text) || !(parm is string uri))
+            {
+                return null;
+            }
+            string[] parts = text.Split(Constants.CRLF, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length == 1)
+            {
+                return null;
+            }
+            return new Uri(uri, UriKind.Relative);
+        }
+
+        public object ConvertBack(object value, Type t, object parm, CultureInfo lang)
+        {
+            return DependencyProperty.UnsetValue;
+        }
+    }
+
+    // convert from PasswordStrength to description
+
+    [ValueConversion(typeof(PasswordStrength), typeof(string))]
+    public sealed class PasswordStrengthConverter : IValueConverter
+    {
+
+        public object Convert(object value, Type t, object parm, CultureInfo lang)
+        {
+            if (!(value is PasswordStrength ps))
+            {
+                return null;
+            }
+            return ps.GetDescriptionFromEnumValue();
+        }
+
+        public object ConvertBack(object value, Type t, object parm, CultureInfo lang)
+        {
+            return DependencyProperty.UnsetValue;
+        }
+    }
+
+    // convert from PasswordStrength to foreground color
+
+    [ValueConversion(typeof(PasswordStrength), typeof(SolidColorBrush))]
+    public sealed class PasswordStrengthToForegroundConverter : IValueConverter
+    {
+
+        public object Convert(object value, Type t, object parm, CultureInfo lang)
+        {
+            if (!(value is PasswordStrength ps))
+            {
+                return Brushes.Black;
+            }
+            return ps switch
+            {
+                PasswordStrength.VeryWeak => new SolidColorBrush(Color.FromArgb(255, 128, 0, 0)),
+                PasswordStrength.Weak => new SolidColorBrush(Color.FromArgb(255, 64, 0, 0)),
+                PasswordStrength.Medium => Brushes.Gray,
+                PasswordStrength.Strong => new SolidColorBrush(Color.FromArgb(255, 0, 64, 0)),
+                PasswordStrength.VeryStrong => new SolidColorBrush(Color.FromArgb(255, 0, 128, 0)),
+                _ => Brushes.Black
+            };
+        }
+
+        public object ConvertBack(object value, Type t, object parm, CultureInfo lang)
+        {
+            return DependencyProperty.UnsetValue;
+        }
+    }
+
+    // convert from bool (IsPasswordProtected) to string for tooltip
+
+    [ValueConversion(typeof(bool), typeof(string))]
+    public sealed class HashToTooltipConverter : IValueConverter
+    {
+
+        public object Convert(object value, Type t, object parm, CultureInfo lang)
+        {
+            if (!(value is bool ispwprotected))
+            {
+                return null;
+            }
+            return ispwprotected ? "Disable password protection (Alt-W)" : "Enable password protection (Alt-W)";
+        }
+
+        public object ConvertBack(object value, Type t, object parm, CultureInfo lang)
+        {
+            return DependencyProperty.UnsetValue;
+        }
+    }
+
+    // convert from bool to uri where true = checkmark, false = x (overridden with parm)
+
+    [ValueConversion(typeof(bool), typeof(Uri), ParameterType = typeof(string))]
+    public sealed class BoolToUriConverter : IValueConverter
+    {
+
+        public object Convert(object value, Type t, object parm, CultureInfo lang)
+        {
+            string falseuri = "/resources/x-32.png";
+            if (parm is string furi && !string.IsNullOrEmpty(furi))
+            {
+                falseuri = furi;
+            }
+            if (!(value is bool v))
+            {
+                return null;
+            }
+            return v ? new Uri(Constants.Checkmark, UriKind.Relative) : new Uri(falseuri, UriKind.Relative);
+        }
+
+        public object ConvertBack(object value, Type t, object parm, CultureInfo lang)
+        {
+            return DependencyProperty.UnsetValue;
+        }
+    }
+
+    // convert from ExploretItemType to Icon uri
+
+    [ValueConversion(typeof(ExplorerItemType), typeof(Uri))]
+    public sealed class ExplorerItemTypeConverter : IValueConverter
+    {
+
+        public object Convert(object value, Type t, object parm, CultureInfo lang)
+        {
+            if (!(value is ExplorerItemType type))
+            {
+                return null;
+            }
+            return type.GetIconFromEnumValue();
+        }
+
+        public object ConvertBack(object value, Type t, object parm, CultureInfo lang)
+        {
+            return DependencyProperty.UnsetValue;
+        }
+    }
 
     // convert from "/resources/foo-32.png" to "Foo"
 
@@ -51,7 +228,7 @@ namespace Tracker.Infrastructure
 
         public object Convert(object value, Type t, object parm, CultureInfo lang)
         {
-            if (!(value is string spec))
+            if (!(value is string spec) || string.IsNullOrEmpty(spec))
             {
                 return null;
             }
@@ -80,11 +257,14 @@ namespace Tracker.Infrastructure
 
         public object Convert(object value, Type t, object parm, CultureInfo lang)
         {
-            if (!(value is string v))
+            if (!(value is string v) || string.IsNullOrEmpty(v))
             {
                 return null;
             }
-            var uri = new StringToUriConverter().Convert(v, typeof(Uri), "r", CultureInfo.CurrentCulture) as Uri;
+            if (!(new StringToUriConverter().Convert(v, typeof(Uri), "r", CultureInfo.CurrentCulture) is Uri uri))
+            {
+                return null;
+            }
             return new Image { Source = new BitmapImage(uri) };
         }
 
@@ -260,7 +440,7 @@ namespace Tracker.Infrastructure
             {
                 return null;
             }
-            string[] parts = v.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = v.Split(Constants.CRLF, StringSplitOptions.RemoveEmptyEntries);
             return parts[0];
         }
 

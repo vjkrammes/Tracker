@@ -15,6 +15,13 @@ namespace Tracker.ECL.DTO
             set => SetProperty(ref _id, value);
         }
 
+        private int _clientTypeId;
+        public int ClientTypeId
+        {
+            get => _clientTypeId;
+            set => SetProperty(ref _clientTypeId, value);
+        }
+
         private string _name;
         public string Name
         {
@@ -71,23 +78,17 @@ namespace Tracker.ECL.DTO
             set => SetProperty(ref _rowVersion, value);
         }
 
-        private List<Phone> _phones;
-        public List<Phone> Phones
+        private ClientType _clientType;
+        public ClientType ClientType
         {
-            get => _phones;
-            set => SetProperty(ref _phones, value);
-        }
-
-        private List<Note> _notes;
-        public List<Note> Notes
-        {
-            get => _notes;
-            set => SetProperty(ref _notes, value);
+            get => _clientType;
+            set => SetProperty(ref _clientType, value);
         }
 
         public Client()
         {
             Id = 0;
+            ClientTypeId = 0;
             Name = string.Empty;
             Address = string.Empty;
             City = string.Empty;
@@ -95,11 +96,13 @@ namespace Tracker.ECL.DTO
             PostalCode = string.Empty;
             PrimaryContact = string.Empty;
             Comments = string.Empty;
+            ClientType = null;
         }
 
         public Client Clone() => new Client
         {
             Id = Id,
+            ClientTypeId = ClientTypeId,
             Name = Name ?? string.Empty,
             Address = Address ?? string.Empty,
             City = City ?? string.Empty,
@@ -107,7 +110,8 @@ namespace Tracker.ECL.DTO
             PostalCode = PostalCode ?? string.Empty,
             PrimaryContact = PrimaryContact ?? string.Empty,
             Comments = Comments ?? string.Empty,
-            RowVersion = RowVersion.ArrayCopy()
+            RowVersion = RowVersion.ArrayCopy(),
+            ClientType = ClientType?.Clone(),
         };
 
         public override string ToString() => Name;

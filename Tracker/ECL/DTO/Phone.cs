@@ -62,6 +62,7 @@ namespace Tracker.ECL.DTO
             PhoneTypeId = PhoneTypeId,
             ClientId = ClientId,
             Number = Number ?? string.Empty,
+            PhoneType = PhoneType?.Clone(),
             RowVersion = RowVersion.ArrayCopy()
         };
 

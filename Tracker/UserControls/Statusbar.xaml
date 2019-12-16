@@ -12,6 +12,7 @@
     <UserControl.Resources>
         <ti:DoublesToTooltipConverter x:Key="TooltipConverter"/>
         <ti:DoubleToColorConverter x:Key="BackgroundConverter"/>
+        <ti:BoolToUriConverter x:Key="BoolConverter"/>
     </UserControl.Resources>
     <Grid Visibility="{Binding StatusbarVisibility}">
         <Border Margin="5,0" BorderBrush="{DynamicResource Border}" BorderThickness="1" Background="AliceBlue" Padding="0,2">
@@ -60,6 +61,9 @@
                 <Separator />
                 <Image Source="/resources/dotlist-32.png" ToolTip="Phone Types"/>
                 <TextBlock Text="{Binding PhoneTypeCount, StringFormat='n0'}"/>
+                <Separator />
+                <Image Source="/resources/key-32.png" ToolTip="Password Protected"/>
+                <Image Source="{Binding IsPasswordProtected, Converter={StaticResource BoolConverter}}"/>
                 <Separator />
                 <Label Content="Total Hours:"/>
                 <TextBlock Text="{Binding HoursTotal, StringFormat='n2'}"/>

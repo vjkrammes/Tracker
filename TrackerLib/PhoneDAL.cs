@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-
+using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using TrackerLib.Entities;
 using TrackerLib.Interfaces;
+using TrackerCommon;
 
 namespace TrackerLib
 {
@@ -18,6 +21,25 @@ namespace TrackerLib
                 _dbset.Remove(entity);
                 _context.SaveChanges();
             }
+        }
+
+        public override IEnumerable<PhoneEntity> Get(Expression<Func<PhoneEntity, bool>> pred = null, string sort = null, char direction = 'a')
+        {
+            bool descending = direction == 'd' || direction == 'D';
+            return pred switch
+            {
+                null => _dbset
+                    .Include(x => x.PhoneType)
+                    .OrderBy(sort, descending)
+                    .AsNoTracking()
+                    .ToList(),
+                _ => _dbset
+                    .Include(x => x.PhoneType)
+                    .Where(pred)
+                    .OrderBy(sort, descending)
+                    .AsNoTracking()
+                    .ToList()
+            };
         }
 
         public IEnumerable<PhoneEntity> GetForClient(int cid) => Get(x => x.ClientId == cid, "Number", 'a');

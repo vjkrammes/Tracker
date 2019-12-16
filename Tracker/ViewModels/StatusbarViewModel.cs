@@ -87,6 +87,13 @@ namespace Tracker.ViewModels
             set => SetProperty(ref _howFull, value);
         }
 
+        private bool _isPasswordProtected;
+        public bool IsPasswordProtected
+        {
+            get => _isPasswordProtected;
+            set => SetProperty(ref _isPasswordProtected, value);
+        }
+
         private decimal _hoursTotal;
         public decimal HoursTotal
         {
@@ -110,6 +117,7 @@ namespace Tracker.ViewModels
             NoteCount = Tools.Locator.NoteECL.Count;
             PhoneCount = Tools.Locator.PhoneECL.Count;
             PhoneTypeCount = Tools.Locator.PhoneTypeECL.Count;
+            IsPasswordProtected = Tools.Locator.Settings.PasswordHash != null;
             HoursTotal = Tools.Locator.HoursECL.TotalHours();
             MileageTotal = Tools.Locator.MileageECL.TotalMiles();
             DatabaseSize = _context.DatabaseInfo().Size;

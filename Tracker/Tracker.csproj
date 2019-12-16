@@ -4,6 +4,15 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>1494549981_106.ico</ApplicationIcon>
+    <Version>1.0</Version>
+    <Authors>V. James Krammes</Authors>
+    <Company>VJK Solutions, LLC</Company>
+    <Description>Track hours and mileage back to a client</Description>
+    <Copyright>© Copyright 2019 VJK Solutions, LLC.</Copyright>
+    <PackageLicenseFile>License.txt</PackageLicenseFile>
+    <RepositoryType>Git</RepositoryType>
+    <RepositoryUrl>https://github.com/vjkrammes/Tracker</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -57,6 +66,7 @@
     <None Remove="resources\money-32.png" />
     <None Remove="resources\moneybag-32.png" />
     <None Remove="resources\network-32.png" />
+    <None Remove="resources\notebook-512.png" />
     <None Remove="resources\notification-32.png" />
     <None Remove="resources\pallette-32.png" />
     <None Remove="resources\phone-32.png" />
@@ -92,6 +102,10 @@
     <None Remove="resources\warning-512.png" />
     <None Remove="resources\wifi-32.png" />
     <None Remove="resources\x-32.png" />
+    <None Include="..\License.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -163,6 +177,7 @@
     <Resource Include="resources\money-32.png" />
     <Resource Include="resources\moneybag-32.png" />
     <Resource Include="resources\network-32.png" />
+    <Resource Include="resources\notebook-512.png" />
     <Resource Include="resources\notification-32.png" />
     <Resource Include="resources\pallette-32.png" />
     <Resource Include="resources\phone-32.png" />
@@ -198,6 +213,12 @@
     <Resource Include="resources\warning-512.png" />
     <Resource Include="resources\wifi-32.png" />
     <Resource Include="resources\x-32.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

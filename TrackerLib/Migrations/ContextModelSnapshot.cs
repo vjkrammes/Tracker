@@ -192,9 +192,6 @@ namespace TrackerLib.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ClientEntityId")
-                        .HasColumnType("int");
-
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
 
@@ -212,7 +209,8 @@ namespace TrackerLib.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientEntityId");
+                    b.HasIndex("ClientId")
+                        .HasAnnotation("SqlServer:Clustered", false);
 
                     b.HasIndex("Date")
                         .HasAnnotation("SqlServer:Clustered", false);
@@ -226,9 +224,6 @@ namespace TrackerLib.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("ClientEntityId")
-                        .HasColumnType("int");
 
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
@@ -248,12 +243,7 @@ namespace TrackerLib.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientEntityId");
-
                     b.HasIndex("ClientId")
-                        .HasAnnotation("SqlServer:Clustered", false);
-
-                    b.HasIndex("Number")
                         .HasAnnotation("SqlServer:Clustered", false);
 
                     b.HasIndex("PhoneTypeId");
@@ -372,16 +362,20 @@ namespace TrackerLib.Migrations
 
             modelBuilder.Entity("TrackerLib.Entities.NoteEntity", b =>
                 {
-                    b.HasOne("TrackerLib.Entities.ClientEntity", null)
+                    b.HasOne("TrackerLib.Entities.ClientEntity", "Client")
                         .WithMany("Notes")
-                        .HasForeignKey("ClientEntityId");
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("TrackerLib.Entities.PhoneEntity", b =>
                 {
-                    b.HasOne("TrackerLib.Entities.ClientEntity", null)
+                    b.HasOne("TrackerLib.Entities.ClientEntity", "Client")
                         .WithMany("Phones")
-                        .HasForeignKey("ClientEntityId");
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("TrackerLib.Entities.PhoneTypeEntity", "PhoneType")
                         .WithMany()

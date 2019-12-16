@@ -1,8 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using TrackerCommon;
 
 namespace TrackerLib.Entities
 {
+    [HasNullableMembers]
     public class NoteEntity
     {
         [Required]
@@ -16,6 +18,8 @@ namespace TrackerLib.Entities
         [Timestamp]
         public byte[] RowVersion { get; set; }
 
+        [NullOnInsert, NullOnUpdate]
+        public ClientEntity Client { get; set; }
         public override string ToString() => Date.ToString();
     }
 }

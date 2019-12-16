@@ -122,8 +122,6 @@ namespace TrackerLib
 
             builder.Entity<ClientEntity>().HasIndex(x => x.Name).IsUnique().IsClustered(false);
             builder.Entity<ClientEntity>().HasOne(x => x.ClientType);
-            builder.Entity<ClientEntity>().HasMany(x => x.Phones);
-            builder.Entity<ClientEntity>().HasMany(x => x.Notes);
 
             builder.Entity<ClientTypeEntity>().HasIndex(x => x.Name).IsUnique().IsClustered(false);
 
@@ -137,12 +135,14 @@ namespace TrackerLib
             builder.Entity<MileageEntity>().Property(x => x.Date).HasColumnType(Constants.Date);
             builder.Entity<MileageEntity>().Property(x => x.Miles).HasColumnType(Constants.Miles);
 
+            builder.Entity<NoteEntity>().HasIndex(x => x.ClientId).IsClustered(false);
             builder.Entity<NoteEntity>().HasIndex(x => x.Date).IsClustered(false);
             builder.Entity<NoteEntity>().Property(x => x.Date).HasColumnType(Constants.Datetime2);
+            builder.Entity<NoteEntity>().HasOne(x => x.Client);
 
             builder.Entity<PhoneEntity>().HasIndex(x => x.ClientId).IsClustered(false);
-            builder.Entity<PhoneEntity>().HasIndex(x => x.Number).IsClustered(false);
             builder.Entity<PhoneEntity>().HasOne(x => x.PhoneType);
+            builder.Entity<PhoneEntity>().HasOne(x => x.Client);
 
             builder.Entity<PhoneTypeEntity>().HasIndex(x => x.Name).IsUnique().IsClustered(false);
 

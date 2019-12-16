@@ -58,6 +58,19 @@ namespace Tracker.ViewModels
             }
         }
 
+        private RelayCommand _togglePasswordCommand;
+        public ICommand TogglePasswordCommand
+        {
+            get
+            {
+                if (_togglePasswordCommand is null)
+                {
+                    _togglePasswordCommand = new RelayCommand(parm => TogglePasswordClick(), parm => AlwaysCanExecute());
+                }
+                return _togglePasswordCommand;
+            }
+        }
+
         private RelayCommand _backupCommand;
         public ICommand BackupCommand
         {
@@ -143,7 +156,7 @@ namespace Tracker.ViewModels
             {
                 if (_deleteClientCommand is null)
                 {
-                    _deleteClientCommand = new RelayCommand(parm => DeleteClientClick(), parm => ClientSelected());
+                    _deleteClientCommand = new RelayCommand(parm => DeleteClientClick(), parm => DeleteClientCanClick());
                 }
                 return _deleteClientCommand;
             }
@@ -188,16 +201,29 @@ namespace Tracker.ViewModels
             }
         }
 
-        private RelayCommand _editNoteCommand;
-        public ICommand EditNoteCommand
+        private RelayCommand _editNoteDateCommand;
+        public ICommand EditNoteDateCommand
         {
             get
             {
-                if (_editNoteCommand is null)
+                if (_editNoteDateCommand is null)
                 {
-                    _editNoteCommand = new RelayCommand(parm => EditNoteClick(), parm => NoteSelected());
+                    _editNoteDateCommand = new RelayCommand(parm => EditNoteDateClick(), parm => NoteSelected());
                 }
-                return _editNoteCommand;
+                return _editNoteDateCommand;
+            }
+        }
+
+        private RelayCommand _editNoteTextCommand;
+        public ICommand EditNoteTextCommand
+        {
+            get
+            {
+                if (_editNoteTextCommand is null)
+                {
+                    _editNoteTextCommand = new RelayCommand(parm => EditNoteTextClick(), parm => NoteSelected());
+                }
+                return _editNoteTextCommand;
             }
         }
 

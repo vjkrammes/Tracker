@@ -6,9 +6,9 @@ namespace TrackerCommon
 {
     public static class ConfigurationFactory
     {
-        public static IConfiguration Create() => new ConfigurationBuilder()
+        public static IConfiguration Create(bool optional = true) => new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile(Constants.ConfigurationFilename, optional: true)
+            .AddJsonFile(Constants.ConfigurationFilename, optional: optional)
             .Build();
     }
 }

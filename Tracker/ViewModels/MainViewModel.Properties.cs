@@ -34,6 +34,13 @@ namespace Tracker.ViewModels
             }
         }
 
+        private bool _isPasswordProtected;
+        public bool IsPasswordProtected
+        {
+            get => _isPasswordProtected;
+            set => SetProperty(ref _isPasswordProtected, value);
+        }
+
         private ObservableCollection<Client> _clients;
         public ObservableCollection<Client> Clients
         {

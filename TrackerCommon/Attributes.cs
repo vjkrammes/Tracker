@@ -28,6 +28,15 @@ namespace TrackerCommon
         public NullOnUpdateAttribute(bool value) => _nullify = value;
         public bool NullOnUpdate { get => _nullify; }
     }
+    
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = true)]
+    public sealed class NullOnInsertAttribute : Attribute
+    {
+        private readonly bool _nullify;
+        public NullOnInsertAttribute() => _nullify = true;
+        public NullOnInsertAttribute(bool value) => _nullify = value;
+        public bool NullOnInsert { get => _nullify; }
+    }
 
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = false)]
     public sealed class NonNegativeAttribute : ValidationAttribute

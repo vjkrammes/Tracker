@@ -29,14 +29,8 @@ namespace TrackerLib.Entities
         [Timestamp]
         public byte[] RowVersion { get; set; }
 
-        [NullOnUpdate]
+        [NullOnUpdate, NullOnInsert]
         public ClientTypeEntity ClientType { get; set; }
-
-        [NullOnUpdate]
-        public List<PhoneEntity> Phones { get; set; }
-
-        [NullOnUpdate]
-        public List<NoteEntity> Notes { get; set; }
 
         public override string ToString() => $"{Name ?? "Unknown"} ({PrimaryContact ?? "Unknown"})";
 

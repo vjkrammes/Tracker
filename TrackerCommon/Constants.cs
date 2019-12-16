@@ -10,6 +10,9 @@
         public const double DefaultIconHeight = 24.0;
         public const double MaximumIconHeight = 32.0;
 
+        public const double DarkPercent = 0.75;
+        public const double LightPercent = 1.25;
+
         public const int DefaultTimeout = 10;
         public const bool DefaultPooling = true;
         public const bool DefaultTrustedConnection = true;
@@ -19,10 +22,12 @@
         public const int HashLength = 64;           // bytes, not bits
         public const int SaltLength = 64;           // ditto
 
-        // Exit codes, next = 903
+        // Exit codes, next = 905
 
         public const int MigrationFailed = 901;
         public const int ClientLoadFailed = 902;
+        public const int NoPasswordEntered = 903;
+        public const int BadPasswordEntered = 904;
 
         // strings
 
@@ -69,5 +74,9 @@
         public const string DBE = "Database Error";
         public const string IOE = "I/O Error";
         public const string DuplicateKey = "An item with the same key has already been added.";
+
+        // others
+
+        public static readonly char[] CRLF = new char[] { '\r', '\n' }; // can't be a constant
     }
 }

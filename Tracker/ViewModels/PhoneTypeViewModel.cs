@@ -1,22 +1,23 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Text;
-using Tracker.ECL.DTO;
-using Tracker.ECL.Interfaces;
-using Tracker.Infrastructure;
-using Tracker.Views;
-using Tracker.Models;
-using TrackerCommon;
 using System.Reflection;
 using System.Resources;
-using System.Collections;
+using System.Text;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+
+using Tracker.ECL.DTO;
+using Tracker.Infrastructure;
+using Tracker.Models;
+using Tracker.Views;
+
+using TrackerCommon;
 
 namespace Tracker.ViewModels
 {
@@ -130,14 +131,94 @@ namespace Tracker.ViewModels
 
         private void AddClick()
         {
-
+            var ecl = Tools.Locator.PhoneTypeECL;
+            if (ecl.Read(Name) != null)
+            {
+                PopupManager.Popup($"A Phone Type with the name '{Name}' already exists", "Duplicate Phone Type", PopupButtons.Ok,
+                    PopupImage.Stop);
+                FocusRequested?.Invoke(this, EventArgs.Empty);
+                return;
+            }
+            PhoneType p = new PhoneType
+            {
+                Name = Name.Caseify(),
+                ImageUri = SelectedIcon
+            };
+            try
+            {
+                ecl.Insert(p);
+            }
+            catch (Exception ex)
+            {
+                PopupManager.Popup("Failed to insert new Phone Type", Constants.DBE, ex.Innermost(), PopupButtons.Ok, PopupImage.Error);
+                FocusRequested?.Invoke(this, EventArgs.Empty);
+                return;
+            }
+            int ix = 0;
+            while (ix < Types.Count && Types[ix] < p)
+            {
+                ix++;
+            }
+            Types.Insert(ix, p);
+            SelectedType = p;
+            SelectedType = null;
+            Name = String.Empty;
+            SelectedIcon = null;
+            FocusRequested?.Invoke(this, EventArgs.Empty);
         }
 
         private bool TypeSelected() => SelectedType != null;
 
         private void RenameClick()
         {
-
+            var ecl = Tools.Locator.PhoneTypeECL;
+            if (SelectedType is null)
+            {
+                return;
+            }
+            QAViewModel vm = Tools.Locator.QAViewModel;
+            vm.Question = "Name:";
+            vm.Answer = SelectedType.Name;
+            vm.AnswerRequired = true;
+            vm.BorderBrush = Application.Current.Resources[Constants.Border] as SolidColorBrush;
+            if (DialogSupport.ShowDialog<QAWindow>(vm) != true)
+            {
+                SelectedType = null;
+                FocusRequested?.Invoke(this, EventArgs.Empty);
+                return;
+            }
+            if (!vm.Answer.Equals(SelectedType.Name, StringComparison.OrdinalIgnoreCase) && ecl.Read(vm.Answer) != null)
+            {
+                PopupManager.Popup($"A Phone Type with the name '{vm.Answer}' already exists", "Duplicate Phonet Type", PopupButtons.Ok,
+                    PopupImage.Stop);
+                SelectedType = null;
+                FocusRequested?.Invoke(this, EventArgs.Empty);
+                return;
+            }
+            PhoneType p = SelectedType.Clone();
+            p.Name = vm.Answer.Caseify();
+            try
+            {
+                Tools.Locator.PhoneTypeECL.Update(p);
+            }
+            catch (Exception ex)
+            {
+                PopupManager.Popup("Failed to update Phone Type", Constants.DBE, ex.Innermost(), PopupButtons.Ok, PopupImage.Error);
+                SelectedType = null;
+                FocusRequested?.Invoke(this, EventArgs.Empty);
+                return;
+            }
+            Types.Remove(SelectedType);
+            SelectedType = null;
+            int ix = 0;
+            while (ix < Types.Count && Types[ix] < p)
+            {
+                ix++;
+            }
+            Types.Insert(ix, p);
+            SelectedType = p;
+            SelectedType = null;
+            FocusRequested?.Invoke(this, EventArgs.Empty);
         }
 
         private void ChangeIcon(object parm)
@@ -148,13 +229,45 @@ namespace Tracker.ViewModels
                 FocusRequested?.Invoke(this, EventArgs.Empty);
                 return;
             }
+            string save = SelectedType.ImageUri;
+            SelectedType.ImageUri = uri;
+            try
+            {
+                Tools.Locator.PhoneTypeECL.Update(SelectedType);
+            }
+            catch (Exception ex)
+            {
+                SelectedType.ImageUri = save;
+                PopupManager.Popup("Failed to update Phone Type", Constants.DBE, ex.Innermost(), PopupButtons.Ok, PopupImage.Error);
+            }
+            SelectedType = null;
+            FocusRequested?.Invoke(this, EventArgs.Empty);
         }
 
         private bool DeleteCanClick() => SelectedType != null && !Tools.Locator.PhoneECL.PhoneTypeHasPhones(SelectedType.Id);
 
         private void DeleteClick()
         {
-
+            if (SelectedType is null || Tools.Locator.PhoneECL.PhoneTypeHasPhones(SelectedType.Id))
+            {
+                SelectedType = null;
+                FocusRequested?.Invoke(this, EventArgs.Empty);
+                return;
+            }
+            try
+            {
+                Tools.Locator.PhoneTypeECL.Delete(SelectedType);
+            }
+            catch (Exception ex)
+            {
+                PopupManager.Popup("Failed to delete phone type", Constants.DBE, ex.Innermost(), PopupButtons.Ok, PopupImage.Error);
+                SelectedType = null;
+                FocusRequested?.Invoke(this, EventArgs.Empty);
+                return;
+            }
+            Types.Remove(SelectedType);
+            SelectedType = null;
+            FocusRequested?.Invoke(this, EventArgs.Empty);
         }
 
         #endregion

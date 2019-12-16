@@ -58,6 +58,8 @@ namespace Tracker.ECL
 
         public Client Read(int id) => _mapper.Map<Client>(_dal.Read(id));
 
+        public Client Read(string name) => _mapper.Map<Client>(_dal.Read(name));
+
         public bool ClientTypeHasClients(int ctid) => _dal.ClientTypeHasClients(ctid);
     }
 }
