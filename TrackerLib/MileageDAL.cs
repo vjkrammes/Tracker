@@ -22,6 +22,18 @@ namespace TrackerLib
 
         public IEnumerable<MileageEntity> GetForClient(int cid) => Get(x => x.ClientId == cid, "Date", 'd');
 
+        public IEnumerable<MileageEntity> Extract() => Get(null, "Date", 'd');
+
+        public IEnumerable<MileageEntity> ExtractYear(int year) => Get(x => x.Date.Year == year, "Date", 'd');
+
+        public IEnumerable<MileageEntity> ExtractYear(int cid, int year) => Get(x => x.ClientId == cid && x.Date.Year == year, "Date", 'd');
+
+        public IEnumerable<MileageEntity> ExtractRange(int start, int end) =>
+            Get(x => x.Date.Year >= start && x.Date.Year <= end, "Date", 'd');
+
+        public IEnumerable<MileageEntity> ExtractRange(int cid, int start, int end) =>
+            Get(x => x.ClientId == cid && x.Date.Year >= start && x.Date.Year <= end, "Date", 'd');
+
         public MileageEntity Read(int id) => Get(x => x.Id == id).SingleOrDefault();
 
         public bool ClientHasMileage(int cid) => GetForClient(cid).Any();

@@ -59,6 +59,18 @@ namespace Tracker.ECL
 
         public IEnumerable<Mileage> GetForClient(int cid) => Get(x => x.ClientId == cid, "Date", 'd');
 
+        public IEnumerable<Mileage> Extract() => Get(null, "Date", 'd');
+
+        public IEnumerable<Mileage> ExtractYear(int year) => Get(x => x.Date.Year == year, "Date", 'd');
+
+        public IEnumerable<Mileage> ExtractYear(int cid, int year) => Get(x => x.ClientId == cid && x.Date.Year == year);
+
+        public IEnumerable<Mileage> ExtractRange(int start, int end) =>
+            Get(x => x.Date.Year >= start && x.Date.Year <= end);
+
+        public IEnumerable<Mileage> ExtractRange(int cid, int start, int end) =>
+            Get(x => x.ClientId == cid && x.Date.Year >= start && x.Date.Year <= end);
+
         public Mileage Read(int id) => _mapper.Map<Mileage>(_dal.Read(id));
 
         public bool ClientHasMileage(int cid) => GetForClient(cid).Any();

@@ -15,6 +15,61 @@ using TrackerCommon;
 
 namespace Tracker.Infrastructure
 {
+    // convert from decimal to string for setting GroupBox header, base string in parm
+
+    [ValueConversion(typeof(decimal), typeof(string), ParameterType = typeof(string))]
+    public sealed class DecimalToHeaderConverter : IValueConverter
+    {
+
+        public object Convert(object value, Type t, object parm, CultureInfo lang)
+        {
+            string basepart = string.Empty;
+            if ((parm is string basestring) && !string.IsNullOrEmpty(basestring))
+            {
+                basepart = basestring;
+            }
+            if (!(value is decimal v) || v == 0M)
+            {
+                return basepart;
+            }
+            return $"{basepart} ({v:n2} total)";
+        }
+
+        public object ConvertBack(object value, Type t, object parm, CultureInfo lang)
+        {
+            return DependencyProperty.UnsetValue;
+        }
+    }
+
+    // convert to / from string / int where 0 = blank
+
+    [ValueConversion(typeof(int), typeof(string))]
+    public sealed class IntToDisplayConverter : IValueConverter
+    {
+
+        public object Convert(object value, Type t, object parm, CultureInfo lang)
+        {
+            if (!(value is int v))
+            {
+                return string.Empty;
+            }
+            return v == 0 ? string.Empty : v.ToString();
+        }
+
+        public object ConvertBack(object value, Type t, object parm, CultureInfo lang)
+        {
+            if (!(value is string v))
+            {
+                return 0;
+            }
+            if (!int.TryParse(v, out int val))
+            {
+                return 0;
+            }
+            return string.IsNullOrEmpty(v) ? 0 : val;
+        }
+    }
+
     // convert decimal to / from string
 
     [ValueConversion(typeof(decimal), typeof(string))]

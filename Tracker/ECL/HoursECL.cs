@@ -59,6 +59,18 @@ namespace Tracker.ECL
 
         public IEnumerable<Hours> GetForClient(int cid) => Get(x => x.ClientId == cid, "Date", 'd');
 
+        public IEnumerable<Hours> Extract() => Get(null, "Date", 'd');
+
+        public IEnumerable<Hours> ExtractYear(int year) => Get(x => x.Date.Year == year, "Date", 'd');
+
+        public IEnumerable<Hours> ExtractYear(int cid, int year) => Get(x => x.ClientId == cid && x.Date.Year == year, "Date", 'd');
+
+        public IEnumerable<Hours> ExtractRange(int start, int end) => 
+            Get(x => x.Date.Year >= start && x.Date.Year <= end, "Date", 'd');
+
+        public IEnumerable<Hours> ExtractRange(int cid, int start, int end) =>
+            Get(x => x.ClientId == cid && x.Date.Year >= start && x.Date.Year <= end, "Date", 'd');
+
         public Hours Read(int id) => _mapper.Map<Hours>(_dal.Read(id));
 
         public bool ClientHasHours(int cid) => GetForClient(cid).Any();

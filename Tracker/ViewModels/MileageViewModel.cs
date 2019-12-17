@@ -9,7 +9,7 @@ using TrackerCommon;
 
 namespace Tracker.ViewModels
 {
-    public class HoursViewModel : ViewModelBase
+    public class MileageViewModel : ViewModelBase
     {
         #region Properties
 
@@ -32,20 +32,20 @@ namespace Tracker.ViewModels
             }
         }
 
-        private Hours _hours;
-        public Hours Hours
+        private Mileage _mileage;
+        public Mileage Mileage
         {
-            get => _hours;
+            get => _mileage;
             set
             {
-                SetProperty(ref _hours, value);
-                if (Hours is null || Hours.Id == 0)
+                SetProperty(ref _mileage, value);
+                if (Mileage is null)
                 {
                     Date = DateTime.Now;
                 }
                 else
                 {
-                    Date = Hours.Date;
+                    Date = Mileage.Date;
                 }
             }
         }
@@ -57,7 +57,7 @@ namespace Tracker.ViewModels
             set
             {
                 SetProperty(ref _date, value);
-                Hours.Date = Date ?? (default);
+                Mileage.Date = Date ?? default;
             }
         }
 
@@ -96,8 +96,8 @@ namespace Tracker.ViewModels
 
         #region Command Methods
 
-        public override bool OkCanExecute() => Date.HasValue && Date.Value != default && Hours.Time > 0M;
-        
+        public override bool OkCanExecute() => Date.HasValue && Date.Value != default && Mileage.Miles > 0M;
+
         private void WindowLoaded()
         {
             if (Client is null)
@@ -110,9 +110,9 @@ namespace Tracker.ViewModels
 
         #endregion
 
-        public HoursViewModel()
+        public MileageViewModel()
         {
-            Hours = new Hours();
+            Mileage = new Mileage();
             Date = DateTime.Now;
             StartColor = Colors.White;
             EndColor = Colors.White;

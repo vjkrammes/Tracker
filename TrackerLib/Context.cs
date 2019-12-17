@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 
 using Microsoft.Data.SqlClient;
@@ -53,6 +54,14 @@ namespace TrackerLib
                 SystemSettings.Add(SettingsEntity.Default);
                 SaveChanges();
             }
+        }
+
+        public IEnumerable<int> Years()
+        {
+            HashSet<int> hyears = new HashSet<int>(Hours.Select(x => x.Date.Year).Distinct());
+            HashSet<int> myears = new HashSet<int>(Mileage.Select(x => x.Date.Year).Distinct());
+            hyears.UnionWith(myears);
+            return hyears.ToList();
         }
 
         public DatabaseInfo DatabaseInfo()

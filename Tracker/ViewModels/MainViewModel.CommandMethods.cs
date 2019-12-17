@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
+
 using Tracker.ECL.DTO;
 using Tracker.Infrastructure;
 using Tracker.Views;
+
 using TrackerCommon;
+
 using TrackerLib.Interfaces;
 
 namespace Tracker.ViewModels
@@ -64,6 +65,12 @@ namespace Tracker.ViewModels
             LoadPhoneTypeMenuItems();
             SelectedClient = null;
             LoadClients();
+        }
+
+        private void ReportsClick()
+        {
+            var vm = Tools.Locator.ReportsViewModel;
+            DialogSupport.ShowDialog<ReportsWindow>(vm, Application.Current.MainWindow);
         }
 
         private void TogglePasswordClick()
@@ -372,7 +379,6 @@ namespace Tracker.ViewModels
             Notes.Remove(SelectedNote);
             SelectedNote = null;
             int ix = 0;
-            ix = 0;
             while (ix < Notes.Count && Notes[ix] > n)
             {
                 ix++;
@@ -432,7 +438,6 @@ namespace Tracker.ViewModels
                 SelectedNote = null;
                 return;
             }
-            int id = SelectedNote.Id;
             Notes.Remove(SelectedNote);
             SelectedNote = null;
             Tools.Locator.StatusbarViewModel.Update();
@@ -454,6 +459,31 @@ namespace Tracker.ViewModels
             {
                 return;
             }
+            Hours h = new Hours
+            {
+                ClientId = SelectedClient.Id,
+                Date = vm.Date.GetValueOrDefault(),
+                Description = vm.Hours.Description ?? string.Empty,
+                Time = vm.Hours.Time
+            };
+            try
+            {
+                Tools.Locator.HoursECL.Insert(h);
+            }
+            catch (Exception ex)
+            {
+                PopupManager.Popup("Failed to insert new Hours", Constants.DBE, ex.Innermost(), PopupButtons.Ok, PopupImage.Error);
+                return;
+            }
+            int ix = 0;
+            while (ix < Hours.Count && Hours[ix] > h)
+            {
+                ix++;
+            }
+            Hours.Insert(ix, h);
+            SelectedHours = h;
+            SelectedHours = null;
+            Tools.Locator.StatusbarViewModel.Update();
         }
 
         private bool HoursSelected() => SelectedHours != null;
@@ -462,12 +492,69 @@ namespace Tracker.ViewModels
 
         private void EditHoursClick()
         {
-
+            if (SelectedHours is null)
+            {
+                return;
+            }
+            var vm = Tools.Locator.HoursViewModel;
+            vm.Client = SelectedClient;
+            vm.Hours = SelectedHours.Clone();
+            if (DialogSupport.ShowDialog<HoursWindow>(vm, Application.Current.MainWindow) != true)
+            {
+                SelectedHours = null;
+                return;
+            }
+            Hours h = new Hours
+            {
+                Id = vm.Hours.Id,
+                ClientId = vm.Hours.ClientId,
+                Date = vm.Date ?? default,
+                Time = vm.Hours.Time,
+                Description = vm.Hours.Description ?? string.Empty,
+                RowVersion = vm.Hours.RowVersion.ArrayCopy()
+            };
+            try
+            {
+                Tools.Locator.HoursECL.Update(h);
+            }
+            catch (Exception ex)
+            {
+                PopupManager.Popup("Failed to update Hours", Constants.DBE, ex.Innermost(), PopupButtons.Ok, PopupImage.Error);
+                SelectedHours = null;
+                return;
+            }
+            Hours.Remove(SelectedHours);
+            SelectedHours = null;
+            int ix = 0;
+            while (ix < Hours.Count && Hours[ix] > h)
+            {
+                ix++;
+            }
+            Hours.Insert(ix, h);
+            SelectedHours = h;
+            SelectedHours = null;
+            Tools.Locator.StatusbarViewModel.Update();
         }
 
         private void DeleteHoursClick()
         {
-
+            if (SelectedHours is null)
+            {
+                return;
+            }
+            try
+            {
+                Tools.Locator.HoursECL.Delete(SelectedHours);
+            }
+            catch (Exception ex)
+            {
+                PopupManager.Popup("Failed to delete Hours", Constants.DBE, ex.Innermost(), PopupButtons.Ok, PopupImage.Error);
+                SelectedHours = null;
+                return;
+            }
+            Hours.Remove(SelectedHours);
+            SelectedHours = null;
+            Tools.Locator.StatusbarViewModel.Update();
         }
 
         #endregion
@@ -476,7 +563,41 @@ namespace Tracker.ViewModels
 
         private void AddMileageClick()
         {
-
+            if (SelectedClient is null)
+            {
+                return;
+            }
+            var vm = Tools.Locator.MileageViewModel;
+            vm.Client = SelectedClient;
+            if (DialogSupport.ShowDialog<MileageWindow>(vm, Application.Current.MainWindow) != true)
+            {
+                return;
+            }
+            Mileage m = new Mileage
+            {
+                ClientId = SelectedClient.Id,
+                Date = vm.Date.GetValueOrDefault(),
+                Description = vm.Mileage.Description ?? string.Empty,
+                Miles = vm.Mileage.Miles
+            };
+            try
+            {
+                Tools.Locator.MileageECL.Insert(m);
+            }
+            catch (Exception ex)
+            {
+                PopupManager.Popup("Failed to insert new Mileage", Constants.DBE, ex.Innermost(), PopupButtons.Ok, PopupImage.Error);
+                return;
+            }
+            int ix = 0;
+            while (ix < Mileage.Count && Mileage[ix] > m)
+            {
+                ix++;
+            }
+            Mileage.Insert(ix, m);
+            SelectedMileage = m;
+            SelectedMileage = null;
+            Tools.Locator.StatusbarViewModel.Update();
         }
 
         private bool MileageSelected() => SelectedMileage != null;
@@ -485,12 +606,69 @@ namespace Tracker.ViewModels
 
         private void EditMileageClick()
         {
-
+            if (SelectedMileage is null)
+            {
+                return;
+            }
+            var vm = Tools.Locator.MileageViewModel;
+            vm.Client = SelectedClient;
+            vm.Mileage = SelectedMileage.Clone();
+            if (DialogSupport.ShowDialog<MileageWindow>(vm, Application.Current.MainWindow) != true)
+            {
+                SelectedMileage = null;
+                return;
+            }
+            Mileage m = new Mileage
+            {
+                Id = vm.Mileage.Id,
+                ClientId = vm.Mileage.ClientId,
+                Date = vm.Date ?? default,
+                Miles = vm.Mileage.Miles,
+                Description = vm.Mileage.Description ?? string.Empty,
+                RowVersion = vm.Mileage.RowVersion.ArrayCopy()
+            };
+            try
+            {
+                Tools.Locator.MileageECL.Update(m);
+            }
+            catch (Exception ex)
+            {
+                PopupManager.Popup("Failed to update Mileage", Constants.DBE, ex.Innermost(), PopupButtons.Ok, PopupImage.Error);
+                SelectedMileage = null;
+                return;
+            }
+            Mileage.Remove(SelectedMileage);
+            SelectedMileage = null;
+            int ix = 0;
+            while (ix < Mileage.Count && Mileage[ix] > m)
+            {
+                ix++;
+            }
+            Mileage.Insert(ix, m);
+            SelectedMileage = m;
+            SelectedMileage = null;
+            Tools.Locator.StatusbarViewModel.Update();
         }
 
         private void DeleteMileageClick()
         {
-
+            if (SelectedMileage is null)
+            {
+                return;
+            }
+            try
+            {
+                Tools.Locator.MileageECL.Delete(SelectedMileage);
+            }
+            catch (Exception ex)
+            {
+                PopupManager.Popup("Failed to delete Mileage", Constants.DBE, ex.Innermost(), PopupButtons.Ok, PopupImage.Error);
+                SelectedMileage = null;
+                return;
+            }
+            Mileage.Remove(SelectedMileage);
+            SelectedMileage = null;
+            Tools.Locator.StatusbarViewModel.Update();
         }
 
         #endregion

@@ -81,6 +81,7 @@ namespace Tracker.Infrastructure
             services.AddTransient<ExplorerViewModel>();
             services.AddTransient<HoursViewModel>();
             services.AddSingleton<MainViewModel>();
+            services.AddTransient<MileageViewModel>();
             services.AddTransient<NoteViewModel>();
             services.AddTransient<PalletteViewModel>();
             services.AddTransient<PasswordViewModel>();
@@ -88,6 +89,7 @@ namespace Tracker.Infrastructure
             services.AddTransient<PhoneViewModel>();
             services.AddTransient<PopupViewModel>();
             services.AddTransient<QAViewModel>();
+            services.AddTransient<ReportsViewModel>();
             services.AddSingleton<StatusbarViewModel>();
         }
 
@@ -112,6 +114,7 @@ namespace Tracker.Infrastructure
         public ExplorerViewModel ExplorerViewModel { get => _provider.GetRequiredService<ExplorerViewModel>(); }
         public HoursViewModel HoursViewModel { get => _provider.GetRequiredService<HoursViewModel>(); }
         public MainViewModel MainViewModel { get => _provider.GetRequiredService<MainViewModel>(); }
+        public MileageViewModel MileageViewModel { get => _provider.GetRequiredService<MileageViewModel>(); }
         public NoteViewModel NoteViewModel { get => _provider.GetRequiredService<NoteViewModel>(); }
         public PalletteViewModel PalletteViewModel { get => _provider.GetRequiredService<PalletteViewModel>(); }
         public PasswordViewModel PasswordViewModel { get => _provider.GetRequiredService<PasswordViewModel>(); }
@@ -119,6 +122,7 @@ namespace Tracker.Infrastructure
         public PhoneViewModel PhoneViewModel { get => _provider.GetRequiredService<PhoneViewModel>(); }
         public PopupViewModel PopupViewModel { get => _provider.GetRequiredService<PopupViewModel>(); }
         public QAViewModel QAViewModel { get => _provider.GetRequiredService<QAViewModel>(); }
+        public ReportsViewModel ReportsViewModel { get => _provider.GetRequiredService<ReportsViewModel>(); }
         public StatusbarViewModel StatusbarViewModel { get => _provider.GetRequiredService<StatusbarViewModel>(); }
 
         #endregion

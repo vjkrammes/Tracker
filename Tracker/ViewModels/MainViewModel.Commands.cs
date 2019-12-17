@@ -58,6 +58,19 @@ namespace Tracker.ViewModels
             }
         }
 
+        private RelayCommand _reportsCommand;
+        public ICommand ReportsCommand
+        {
+            get
+            {
+                if (_reportsCommand is null)
+                {
+                    _reportsCommand = new RelayCommand(parm => ReportsClick(), parm => AlwaysCanExecute());
+                }
+                return _reportsCommand;
+            }
+        }
+
         private RelayCommand _togglePasswordCommand;
         public ICommand TogglePasswordCommand
         {

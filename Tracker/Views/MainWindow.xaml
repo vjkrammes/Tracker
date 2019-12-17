@@ -92,6 +92,9 @@
             </Button>
             <Separator />
             <Label Content="Other Functions:"/>
+            <Button Command="{Binding ReportsCommand}" ToolTip="Reports" ToolTipService.ShowOnDisabled="True">
+                <Image Source="/resources/excel-32.png"/>
+            </Button>
             <Button Command="{Binding TogglePasswordCommand}" ToolTip="{Binding IsPasswordProtected, 
                     Converter={StaticResource HashTooltipConverter}}" ToolTipService.ShowOnDisabled="True">
                 <Image Source="/resources/key-32.png"/>

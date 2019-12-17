@@ -56,6 +56,10 @@ namespace Tracker.ECL
             return _mapper.Map<List<Client>>(entities);
         }
 
+        public IEnumerable<Client> ClientsWithActivity(int year = 0) => _mapper.Map<List<Client>>(_dal.ClientsWithActivity(year));
+
+        public IEnumerable<Client> ClientsWithActivity(int start, int end) => _mapper.Map<List<Client>>(_dal.ClientsWithActivity(start, end));
+
         public Client Read(int id) => _mapper.Map<Client>(_dal.Read(id));
 
         public Client Read(string name) => _mapper.Map<Client>(_dal.Read(name));

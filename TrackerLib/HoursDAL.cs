@@ -21,6 +21,16 @@ namespace TrackerLib
         }
 
         public IEnumerable<HoursEntity> GetForClient(int cid) => Get(x => x.ClientId == cid, "Date", 'd');
+        public IEnumerable<HoursEntity> Extract() => Get(null, "Date", 'd');
+
+        public IEnumerable<HoursEntity> ExtractYear(int year) => Get(x => x.Date.Year == year, "Date", 'd');
+        public IEnumerable<HoursEntity> ExtractYear(int cid, int year) => Get(x => x.ClientId == cid && x.Date.Year == year, "Date", 'd');
+
+        public IEnumerable<HoursEntity> ExtractRange(int start, int end) =>
+            Get(x => x.Date.Year >= start && x.Date.Year <= end, "Date", 'd');
+
+        public IEnumerable<HoursEntity> ExtractRange(int cid, int start, int end) =>
+            Get(x => x.ClientId == cid && x.Date.Year >= start && x.Date.Year <= end, "Date", 'd');
 
         public HoursEntity Read(int id) => Get(x => x.Id == id).SingleOrDefault();
 
