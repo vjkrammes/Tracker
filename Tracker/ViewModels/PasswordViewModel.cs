@@ -4,6 +4,7 @@ using System.Windows;
 using Tracker.Infrastructure;
 
 using TrackerCommon;
+
 using TrackerLib.Interfaces;
 
 namespace Tracker.ViewModels

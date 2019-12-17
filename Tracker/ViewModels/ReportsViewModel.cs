@@ -6,7 +6,9 @@ using System.Linq;
 using System.Windows.Input;
 
 using AutoMapper;
+
 using Microsoft.Win32;
+
 using Tracker.ECL.DTO;
 using Tracker.ECL.Interfaces;
 using Tracker.Infrastructure;

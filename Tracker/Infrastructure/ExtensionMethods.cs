@@ -69,7 +69,7 @@ namespace Tracker.Infrastructure
             return Pallette.GetBrush(colorname).Color.Adjust(percent);
         }
 
-        public static  (Color, Color) Adjust(this Color color) => 
+        public static (Color, Color) Adjust(this Color color) =>
             (color.Adjust(Constants.DarkPercent), color.Adjust(Constants.LightPercent));
     }
 }

@@ -251,7 +251,7 @@ namespace Tracker.ViewModels
                 return;
             }
             string msg = $"Delete client '{SelectedClient.Name}'? Action cannot be undone.";
-            if (PopupManager.Popup(msg,"Delete Client?", PopupButtons.YesNo,PopupImage.Question) != PopupResult.Yes)
+            if (PopupManager.Popup(msg, "Delete Client?", PopupButtons.YesNo, PopupImage.Question) != PopupResult.Yes)
             {
                 SelectedClient = null;
                 return;

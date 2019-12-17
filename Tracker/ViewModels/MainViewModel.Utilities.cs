@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+
 using Tracker.ECL.DTO;
 using Tracker.Infrastructure;
 using Tracker.Models;
 using Tracker.Views;
+
 using TrackerCommon;
+
 using TrackerLib.Interfaces;
 
 namespace Tracker.ViewModels

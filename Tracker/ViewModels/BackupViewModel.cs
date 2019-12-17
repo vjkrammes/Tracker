@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using System.Windows;
-using System.Windows.Input;
 using System.Collections.ObjectModel;
 using System.IO;
-using Tracker.Infrastructure;
-using TrackerLib.Interfaces;
-using TrackerLib;
-using TrackerCommon;
-using Tracker.Views;
+using System.Windows.Input;
+
 using Microsoft.Extensions.Configuration;
+
+using Tracker.Infrastructure;
+using Tracker.Views;
+
+using TrackerCommon;
+
+using TrackerLib;
+using TrackerLib.Interfaces;
 
 namespace Tracker.ViewModels
 {
@@ -142,7 +142,7 @@ namespace Tracker.ViewModels
                 return;
             }
             string msg = $"Delete the backup file '{SelectedFile.FullName}'? Action cannot be undone.";
-            if (PopupManager.Popup("Delete Backup File?", "Delete File?", msg,PopupButtons.YesNo, PopupImage.Question) != PopupResult.Yes)
+            if (PopupManager.Popup("Delete Backup File?", "Delete File?", msg, PopupButtons.YesNo, PopupImage.Question) != PopupResult.Yes)
             {
                 SelectedFile = null;
                 return;

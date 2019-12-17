@@ -23,7 +23,7 @@ namespace Tracker.Infrastructure
         }
 
         public Guid SystemId { get => _settings.SystemId; }
-        
+
         public string ProductName { get => _settings.ProductName; }
 
         public double ProductVersion { get => _settings.ProductVersion; }

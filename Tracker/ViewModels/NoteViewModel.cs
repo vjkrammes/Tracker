@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Windows.Input;
 using System.Windows.Media;
+
 using Tracker.ECL.DTO;
 using Tracker.Infrastructure;
+
 using TrackerCommon;
 
 namespace Tracker.ViewModels

@@ -306,7 +306,7 @@ namespace Tracker.Infrastructure
 
     // convert from string to Image
 
-    [ValueConversion(typeof(string), typeof(Image))] 
+    [ValueConversion(typeof(string), typeof(Image))]
     public sealed class StringToImageConverter : IValueConverter
     {
 

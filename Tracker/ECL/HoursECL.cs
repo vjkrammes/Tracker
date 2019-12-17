@@ -65,7 +65,7 @@ namespace Tracker.ECL
 
         public IEnumerable<Hours> ExtractYear(int cid, int year) => Get(x => x.ClientId == cid && x.Date.Year == year, "Date", 'd');
 
-        public IEnumerable<Hours> ExtractRange(int start, int end) => 
+        public IEnumerable<Hours> ExtractRange(int start, int end) =>
             Get(x => x.Date.Year >= start && x.Date.Year <= end, "Date", 'd');
 
         public IEnumerable<Hours> ExtractRange(int cid, int start, int end) =>

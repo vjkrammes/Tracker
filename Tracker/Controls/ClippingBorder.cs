@@ -16,7 +16,7 @@ namespace Tracker.Controls
             base.OnRender(dc);
         }
 
-        public override  UIElement Child
+        public override UIElement Child
         {
             get => base.Child;
             set

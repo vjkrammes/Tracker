@@ -157,7 +157,7 @@ namespace Tracker.Infrastructure
 
         public Locator()
         {
-            lock(_lockObject)
+            lock (_lockObject)
             {
                 if (!_initialized)
                 {

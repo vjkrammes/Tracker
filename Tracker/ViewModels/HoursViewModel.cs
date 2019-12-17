@@ -97,7 +97,7 @@ namespace Tracker.ViewModels
         #region Command Methods
 
         public override bool OkCanExecute() => Date.HasValue && Date.Value != default && Hours.Time > 0M;
-        
+
         private void WindowLoaded()
         {
             if (Client is null)
