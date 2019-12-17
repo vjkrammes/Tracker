@@ -98,6 +98,7 @@ namespace Tracker.Infrastructure
         #region Properties 
 
         public IConfiguration Configuration { get => _provider.GetRequiredService<IConfiguration>(); }
+        public IExcelManager ExcelManager { get => _provider.GetRequiredService<IExcelManager>(); }
         public IExplorerService ExplorerService { get => _provider.GetRequiredService<IExplorerService>(); }
         public IPasswordManager PasswordManager { get => _provider.GetRequiredService<IPasswordManager>(); }
         public IServiceProvider Provider { get => _provider; }
@@ -165,6 +166,7 @@ namespace Tracker.Infrastructure
                     services.AddDbContext<Context>(ServiceLifetime.Transient);
 
                     services.AddSingleton(ConfigurationFactory.Create());
+                    services.AddTransient<IExcelManager, ExcelManager>();
                     services.AddTransient<IExplorerService, ExplorerService>();
                     services.AddSingleton<IPasswordManager, PasswordManager>();
                     services.AddTransient<IStringCypherService, StringCypherService>();

@@ -80,6 +80,7 @@ namespace Tracker.ViewModels
                 ["Database"] = "Microsoft® SQL (T-SQL)",
                 ["Database Access"] = "Microsoft® Entity Framework Core",
                 ["Entity Mapping"] = "Automapper by Jimmy Bogard",
+                ["Excel Interface"] = "EPPlus by Jan Källman",
                 ["Text Handling"] = "Humanizer by Mehdi Khalili, Oren Novotny",
                 ["Repository"] = "https://github.com/vjkrammes/Tracker"
             };

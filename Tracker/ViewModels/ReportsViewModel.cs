@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Windows.Input;
 
 using AutoMapper;
-
+using Microsoft.Win32;
 using Tracker.ECL.DTO;
 using Tracker.ECL.Interfaces;
 using Tracker.Infrastructure;
@@ -275,11 +276,33 @@ namespace Tracker.ViewModels
 
         #region Command Methods
 
-        private bool ExportCanClick() => false;
+        private bool ExportCanClick() => ExtractedHours != null && ExtractedHours.Any() && ExtractedMileage != null && ExtractedMileage.Any();
 
         private void ExportClick()
         {
-            // TODO: Export extracted records to Excel
+            SaveFileDialog sfd = new SaveFileDialog
+            {
+                Filter = "Excel Files (*.xlsx)|*.xlsx|All Files (*.*)|*.*",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                DefaultExt = "*.xlsx",
+                AddExtension = true
+            };
+            if (sfd.ShowDialog() != true)
+            {
+                return;
+            }
+            var excelmanager = Tools.Locator.ExcelManager;
+            try
+            {
+                excelmanager.Create(new FileInfo(sfd.FileName), ExtractedHours, ExtractedMileage);
+            }
+            catch (Exception ex)
+            {
+                PopupManager.Popup("Excel Build Error", "Excel Error", ex.Innermost(), PopupButtons.Ok, PopupImage.Error);
+                return;
+            }
+            string msg = $"The Excel Spreadsheet '{sfd.FileName}' was created successfully";
+            PopupManager.Popup("Spreadsheet created successfully", "Export Complete", msg, PopupButtons.Ok, PopupImage.Information);
         }
 
         private bool ClearCanClick() => !string.IsNullOrEmpty(SearchText) || SelectedClient != null;
