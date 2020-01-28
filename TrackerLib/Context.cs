@@ -102,7 +102,7 @@ namespace TrackerLib
             {
                 ParameterName = "n",
                 SqlDbType = SqlDbType.NVarChar,
-                Value = config[Constants.DatabaseConfig]
+                Value = config[Constants.DatabaseConfig] ?? Constants.DefaultDatabase
             });
             command.Parameters.Add(new SqlParameter
             {

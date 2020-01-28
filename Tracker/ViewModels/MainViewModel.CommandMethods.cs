@@ -814,8 +814,8 @@ namespace Tracker.ViewModels
             {
                 Authenticate(settings);
             }
-            WindowTitle = $"{settings.ProductName} Version {settings.ProductVersion:0.00}";
-            Banner = $"{settings.ProductName} {settings.ProductVersion:0.00} - Track your Hours and Mileage";
+            WindowTitle = $"{settings.ProductName} Version {Constants.ProductVersion:0.00}";
+            Banner = $"{settings.ProductName} {Constants.ProductVersion:0.00} - Track your Hours and Mileage";
             Tools.Locator.StatusbarViewModel.Update();
             LoadClients();
             LoadPhoneTypeMenuItems();

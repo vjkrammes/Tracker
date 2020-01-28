@@ -15,6 +15,11 @@ namespace Tracker.Infrastructure
         public SettingsService(Context context)
         {
             _settings = context.GetSettings;
+            if (_settings.ProductVersion != Constants.ProductVersion)
+            {
+                _settings.ProductVersion = Constants.ProductVersion;
+                Persist();
+            }
         }
 
         private void Persist()

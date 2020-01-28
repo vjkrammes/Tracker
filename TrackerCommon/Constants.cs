@@ -4,7 +4,7 @@
     {
         // "Numbers"
 
-        public const double ProductVersion = 1.00;
+        public const double ProductVersion = 1.01;
 
         public const double MinimumIconHeight = 16.0;
         public const double DefaultIconHeight = 24.0;
